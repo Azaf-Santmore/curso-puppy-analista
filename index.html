@@ -202,7 +202,7 @@
 <div id="app" class="container">
     <div id="splash-screen" class="w-full text-center flex flex-col items-center justify-center">
         <h1 class="text-5xl font-extrabold mb-4 text-gray-800">¡Bienvenido a la Campaña de Puppy! 🐶</h1>
-        <p class="text-xl text-gray-600 mb-6">En el **Partido P.U.P. (Patitas Unidas por el Pueblo)**, estamos listos para conquistar los votos. ¿Te unes a nuestro equipo de analistas de datos?</p>
+        <p class="text-xl text-gray-600 mb-6">Estamos en el **Partido P.U.P. (Patitas Unidas por el Pueblo)**, ¿estás listo para unirte a nuestro equipo de analistas de datos?</p>
         <div class="w-full max-w-sm">
             <input type="text" id="username-input" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-4 text-center" placeholder="Ingresa tu nombre perruno..."/>
             <button id="start-button" class="button-primary w-full text-xl py-3">¡A mover la cola! 🐾</button>
@@ -288,7 +288,7 @@
                     <p class="mb-2">Abre la hoja de cálculo de Google Sheets: <a href="https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0" target="_blank" class="text-blue-500 hover:underline font-semibold">Haz clic aquí para abrir la hoja de datos</a>.</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
                         <li>1. **Eliminar duplicados:** En la hoja de cálculo, selecciona todas las columnas. Ve a la barra de menú, haz clic en **"Datos"**, luego en **"Limpieza de datos"** y finalmente **"Quitar duplicados"**.</li>
-                        <li>2. **Buscar y reemplazar:** Aún con la hoja seleccionada, usa el atajo **`Ctrl + H`** (o `Cmd + H` en Mac). En el campo "Buscar", escribe "Mora". En el campo "Reemplazar con", escribe "Morena". Haz clic en "Reemplazar todo". Esto es como enseñarle a Puppy a no ladrarle a los carteros.</li>
+                        <li>2. **Buscar y reemplazar:** Aún con la hoja seleccionada, usa el atajo **\`Ctrl + H\`** (o \`Cmd + H\` en Mac). En el campo "Buscar", escribe "Mora". En el campo "Reemplazar con", escribe "Morena". Haz clic en "Reemplazar todo". Esto es como enseñarle a Puppy a no ladrarle a los carteros.</li>
                     </ul>
                     <div class="mt-6 p-4 bg-gray-100 rounded-lg border border-gray-200">
                         <p class="text-sm text-gray-600 italic">**Dato útil:** En Google Sheets, el "Voto de Encuesta" y el "Comentarios de Encuesta" solo nos dicen la intención de voto, no el voto real. ¡Los datos son nuestros mejores amigos!</p>
@@ -307,11 +307,11 @@
                     <p class="mb-2">Abre tu hoja de cálculo y sigue estos pasos:</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
                         <li>1. **Crea una nueva columna:** Inserta una columna a un lado de la columna "Edad" y nómbrala **"Grupo de Edad"**.</li>
-                        <li>2. **Clasifica a los votantes:** Usa la fórmula `SI.CONJUNTO` para clasificar a cada votante. Copia y pega esta fórmula en la primera celda de tu nueva columna (después del encabezado) y arrástrala hacia abajo:
-                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">`=SI.CONJUNTO(E2<35, "Joven", E2<60, "Adulto", VERDADERO, "Veterano")`</pre>
+                        <li>2. **Clasifica a los votantes:** Usa la fórmula \`SI.CONJUNTO\` para clasificar a cada votante. Copia y pega esta fórmula en la primera celda de tu nueva columna (después del encabezado) y arrástrala hacia abajo:
+                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">\`=SI.CONJUNTO(E2<35, "Joven", E2<60, "Adulto", VERDADERO, "Veterano")\`</pre>
                         Esto agrupa a los votantes en **"Jóvenes"** (menores de 35), **"Adultos"** (de 35 a 59), y **"Veteranos"** (60 o más).</li>
-                        <li>3. **Cuenta los grupos:** En una celda aparte, usa la función `CONTAR.SI` para contar cuántos votantes hay en cada grupo de edad. Por ejemplo:
-                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">`=CONTAR.SI(F:F, "Joven")`</pre></li>
+                        <li>3. **Cuenta los grupos:** En una celda aparte, usa la función \`CONTAR.SI\` para contar cuántos votantes hay en cada grupo de edad. Por ejemplo:
+                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">\`=CONTAR.SI(F:F, "Joven")\`</pre></li>
                     </ul>
                 `,
                 question: "Según tu segmentación, ¿cuántos votantes 'Adultos' hay en la lista?",
@@ -325,11 +325,11 @@
                 content: `
                     <p class="mb-4">Para encontrar el votante perfecto para Puppy, necesitamos cruzar información. Esto es como buscar tu juguete favorito en el jardín, usando el olfato y la vista al mismo tiempo.</p>
                     <h3 class="font-bold text-lg mb-2 text-gray-800">Actividad: ¡Encuentra el hueso! 🦴</h3>
-                    <p class="mb-2">Abre la hoja de cálculo de Google Sheets. Usa la hoja "Votantes" y "Tipo de votante".</p>
+                    <p class="mb-2">Abre la hoja de cálculo y ve a la hoja "Votantes" y "Tipo de votante".</p>
                     <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                        <li>1. **Cruza los datos con `VLOOKUP`:** En la hoja "Votantes", crea una nueva columna llamada **"Tipo de Votante"**. En la primera celda, usa la fórmula `BUSCARV` (o `VLOOKUP` en inglés) para traer el "Tipo de votante" de la Hoja 2 ("Tipo de votante") basado en el `ID_Votante`.</li>
-                        <li>2. **Filtra con `QUERY`:** En una hoja nueva, usa la función `QUERY` para crear un filtro avanzado que muestre a todos los "Jóvenes" que viven en la colonia "La Roma" y que son "Indecisos". Tu fórmula lucirá algo así:
-                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">`=QUERY(A:G, "SELECT * WHERE G = 'Joven' AND D = 'La Roma' AND C = 'Indeciso'")`</pre></li>
+                        <li>1. **Cruza los datos con \`VLOOKUP\`:** En la hoja "Votantes", crea una nueva columna llamada **"Tipo de Votante"**. En la primera celda, usa la fórmula \`BUSCARV\` (o \`VLOOKUP\` en inglés) para traer el "Tipo de votante" de la Hoja 2 ("Tipo de votante") basado en el \`ID_Votante\`.</li>
+                        <li>2. **Filtra con \`QUERY\`:** En una hoja nueva, usa la función \`QUERY\` para crear un filtro avanzado que muestre a todos los "Jóvenes" que viven en la colonia "La Roma" y que son "Indecisos". Tu fórmula lucirá algo así:
+                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">\`=QUERY(A:G, "SELECT * WHERE G = 'Joven' AND D = 'La Roma' AND C = 'Indeciso'")\`</pre></li>
                     </ul>
                 `,
                 question: "Usando QUERY, ¿cuántos votantes 'Jóvenes' en 'La Roma' son 'Indecisos'?",
@@ -360,13 +360,7 @@
     let currentModuleIndex = 0;
     let username = "";
     const totalModules = Object.values(COURSE_CONTENT).flat().length;
-    const moduleMap = {};
-    Object.keys(COURSE_CONTENT).forEach(phase => {
-        COURSE_CONTENT[phase].forEach(module => {
-            moduleMap[module.title] = { phase: phase, module: module };
-        });
-    });
-
+    
     const splashScreen = document.getElementById('splash-screen');
     const mainCourse = document.getElementById('main-course');
     const usernameInput = document.getElementById('username-input');
@@ -516,6 +510,7 @@
             console.error("API Key not found.");
             return;
         }
+
         try {
             const { GoogleGenerativeAI } = await import('https://cdn.jsdelivr.net/npm/@google/generative-ai');
             const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
@@ -605,7 +600,7 @@
             splashScreen.classList.add('hidden');
             mainCourse.classList.remove('hidden');
             buildSidebar();
-            startCourse();
+            renderModule(currentModuleIndex);
         } else {
             alert("¡Por favor, ingresa tu nombre para empezar!");
         }
