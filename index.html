@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Datos para la Campaña de Puppy: Partido Woof</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/css/icons.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        h1, h2 {
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .progress-bar {
+            height: 10px;
+            background-color: #e2e8f0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #f7a233; /* Color de Puppy */
+            transition: width 0.5s ease-in-out;
+        }
+        .button-primary {
+            background-color: #f7a233;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .button-primary:hover {
+            background-color: #e0912d;
+        }
+        .option-button {
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-align: left;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .option-button:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        .chat-widget {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 100;
+        }
+        .chat-button {
+            background-color: #1e293b;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+        .chat-button:hover {
+            transform: scale(1.1);
+        }
+        .chat-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .chat-content {
+            background-color: white;
+            width: 90%;
+            max-width: 500px;
+            height: 70%;
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #f1f5f9;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-body {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* Para que el scroll esté siempre abajo */
+        }
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .user-message {
+            background-color: #f7a233;
+            color: white;
+            align-self: flex-end;
+        }
+        .ai-message {
+            background-color: #e2e8f0;
+            color: #1e293b;
+            align-self: flex-start;
+        }
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+        }
+        .chat-input button {
+            background-color: #1e293b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+
+<div id="app" class="p-8">
+    <div id="splash-screen" class="container text-center flex flex-col items-center justify-center min-h-screen">
+        <h1 class="text-4xl font-extrabold mb-4">¡Bienvenido a la Campaña de Puppy! 🐶</h1>
+        <p class="text-lg text-gray-600 mb-6">Estamos en el **Partido Woof (Unidad de Organizaciones y Formación)**. ¿Estás listo para convertirte en el mejor analista de datos de la campaña?</p>
+        <div class="w-full max-w-sm">
+            <input type="text" id="username-input" class="w-full p-3 border border-gray-300 rounded-lg mb-4 text-center" placeholder="Ingresa tu nombre perruno..."/>
+            <button id="start-button" class="button-primary w-full">¡A mover la cola! 🐾</button>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden container">
+        <div class="progress-bar">
+            <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="mb-8">
+            <h1 id="welcome-message" class="text-3xl font-bold mb-2"></h1>
+            <h2 id="module-title" class="text-2xl font-semibold text-gray-700"></h2>
+        </div>
+
+        <div id="module-content"></div>
+
+        <div id="quiz-section" class="mt-8 pt-4 border-t border-gray-200">
+            <div id="question-text" class="text-lg font-medium mb-4"></div>
+            <div id="answer-options"></div>
+            <input type="text" id="short-answer-input" class="w-full p-2 border border-gray-300 rounded-lg hidden" placeholder="Escribe tu respuesta aquí...">
+            <button id="submit-button" class="button-primary mt-4 w-full">Comprobar y avanzar ➡️</button>
+            <div id="feedback" class="mt-4 text-center font-bold hidden"></div>
+        </div>
+
+        <div id="conclusion" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-green-600 mb-4">¡Guau! ¡Lo lograste! 🎉</h2>
+            <p class="text-lg mb-4">Has completado el entrenamiento de análisis de datos para la campaña de Puppy Chiquito Político, del **Partido Woof**. ¡Ahora eres un analista de datos de élite, listo para ayudar a Puppy a ganar! </p>
+            <p class="text-lg mb-4">El futuro de la campaña está en tus manos. ¡Usa tus nuevas habilidades para analizar, visualizar y conquistar los votos! 🐾</p>
+        </div>
+    </div>
+</div>
+
+<div id="chat-widget" class="chat-widget">
+    <button id="chat-button" class="chat-button">
+        <i class="ph-paw-print text-2xl"></i> </button>
+</div>
+
+<div id="chat-modal" class="chat-modal hidden">
+    <div class="chat-content">
+        <div class="chat-header">
+            <h3 class="text-xl font-bold">Asistente de Campaña 🐶</h3>
+            <button id="close-chat-button" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
+        </div>
+        <div id="chat-body" class="chat-body">
+            <div class="message ai-message">¡Guau! Soy tu asistente de campaña del **Partido Woof (Unidad de Organizaciones y Formación)**. ¿En qué puedo ayudarte? Pregunta sobre el curso.</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Pregunta al asistente..." />
+            <button id="send-chat-button">
+                <i class="ph-paper-plane-right text-white text-lg"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const GEMINI_API_KEY = "AIzaSyAisbDrYyve2jOmoXuSYbNKu5Z5FNSlB3E"; // Tu clave de API
+
+    const COURSE_CONTENT = {
+        "Fase 1: El Perro Sabio 🐶": [
+            {
+                title: "Módulo 1: Limpieza de Datos 🧹",
+                content: `
+                    <p class="mb-4">¡Hora de la primera tarea! La campaña de Puppy Chiquito Político del **Partido Woof** tiene una lista de votantes un poco desordenada. Tu primera misión es limpiar los datos para que sean útiles. Es como si Puppy se sacudiera el lodo después de jugar en el parque.</p>
+                    <h3 class="font-bold text-lg mb-2">Actividad 1: ¡A sacudirse el lodo! 🐾</h3>
+                    <p class="mb-2">Abre la hoja de cálculo de Google Sheets: <a href="https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0" target="_blank" class="text-blue-500 hover:underline">¡Aquí está la lista de votantes!</a></p>
+                    <p class="mb-2">1. Selecciona todas las columnas y ve a <strong>"Datos > Limpieza de datos > Quitar duplicados"</strong>.</p>
+                    <p class="mb-2">2. Usa <strong>"Ctrl + H"</strong> (o "Cmd + H" en Mac) para encontrar y reemplazar 'Mora' por 'Morena' en la columna 'Colonia'.</p>
+                    <p class="mb-4">Después de esto, tus datos estarán listos para la siguiente fase del juego.</p>
+                `,
+                question: "¿Cuántos votantes únicos te quedan en total después de eliminar los datos duplicados?",
+                type: "short-answer",
+                answer: "389"
+            },
+            {
+                title: "Módulo 2: Segmentación de Datos 📊",
+                content: `
+                    <p class="mb-4">Un buen analista sabe que no todos los votantes son iguales. Ahora que los datos están limpios, es momento de clasificarlos. Es como si Puppy distinguiera a los dueños que le dan premios de los que solo le dan un abrazo.</p>
+                    <h3 class="font-bold text-lg mb-2">Actividad 2: ¡A contar las patitas! 🐕</h3>
+                    <p class="mb-2">En una nueva columna, clasifica a los votantes por edad usando la fórmula <strong>SI.CONJUNTO</strong>:</p>
+                    <ul class="list-disc list-inside mb-2">
+                        <li><strong>'Jóvenes'</strong>: si la edad es menor a 35.</li>
+                        <li><strong>'Adultos'</strong>: si la edad es entre 35 y 59.</li>
+                        <li><strong><strong>'Veteranos'</strong>: si la edad es 60 o más.</li>
+                    </ul>
+                    <p class="mb-4">Luego, en otra parte de la hoja, usa la función <strong>CONTAR.SI</strong> para contar cuántos votantes hay en cada grupo (Jóvenes, Adultos, Veteranos).</p>
+                `,
+                question: "¿Cuántos votantes 'Adultos' hay en la lista?",
+                type: "short-answer",
+                answer: "148"
+            },
+            {
+                title: "Módulo 3: El Poder de VLOOKUP y QUERY 🔍",
+                content: `
+                    <p class="mb-4">Para encontrar el votante perfecto para Puppy, necesitamos cruzar información. Esto es como buscar tu juguete favorito en el jardín, usando el olfato y la vista al mismo tiempo.</p>
+                    <h3 class="font-bold text-lg mb-2">Actividad 3: ¡Encuentra el hueso! 🦴</h3>
+                    <p class="mb-2">Usa la función <strong>BUSCARV</strong> para traer el 'Tipo de Votante' (de la Hoja 2) a tu lista de votantes (Hoja 1).</p>
+                    <p class="mb-4">Luego, usa la función <strong>QUERY</strong> para crear un filtro avanzado que te muestre a todos los 'Jóvenes' que viven en la colonia 'Mora' y son 'Indecisos'.</p>
+                `,
+                question: "Usando QUERY, ¿cuántos votantes 'Jóvenes' en la colonia 'Mora' son 'Indecisos'?",
+                type: "short-answer",
+                answer: "2"
+            }
+        ],
+        "Fase 2: El Cartógrafo de Datos 🗺️": [
+            {
+                title: "Módulo 4: Creación de Paneles Interactivos 📊",
+                content: `
+                    <p class="mb-4">¡Es hora de hacer que los datos de la campaña brillen! Los paneles de control son como un mapa del parque para Puppy, mostrándole dónde están los mejores lugares para jugar.</p>
+                    <h3 class="font-bold text-lg mb-2">Actividad 4: ¡A dibujar el mapa! 🎨</h3>
+                    <p class="mb-2">Conecta tu hoja de cálculo de Google Sheets con Google Looker Studio. Sigue estos pasos:</p>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>1. Ve a <a href="https://lookerstudio.google.com/" target="_blank" class="text-blue-500 hover:underline">Looker Studio</a> y crea un nuevo informe.</li>
+                        <li>2. Selecciona Google Sheets como tu fuente de datos y elige la hoja de cálculo de Puppy.</li>
+                        <li>3. Crea un gráfico de pastel que muestre la distribución de votantes por 'Edad' (Jóvenes, Adultos, Veteranos).</li>
+                        <li>4. Agrega un cuadro de mando que muestre el 'Recuento de votantes'.</li>
+                    </ul>
+                    <p class="mb-4">Esto te dará una visión rápida y poderosa de la campaña. ¡El mapa del éxito está listo!</p>
+                `,
+                question: "En el gráfico que creaste en Looker Studio, ¿qué porcentaje de los votantes totales son 'Veteranos'?",
+                type: "short-answer",
+                answer: "29%"
+            }
+        ]
+    };
+
+    let currentModuleIndex = 0;
+    let username = "";
+    const totalModules = Object.values(COURSE_CONTENT).flat().length;
+
+    const splashScreen = document.getElementById('splash-screen');
+    const mainContent = document.getElementById('main-content');
+    const usernameInput = document.getElementById('username-input');
+    const startButton = document.getElementById('start-button');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    const moduleContainer = document.getElementById('module-container');
+    const moduleTitle = document.getElementById('module-title');
+    const moduleContent = document.getElementById('module-content');
+    const quizSection = document.getElementById('quiz-section');
+    const questionText = document.getElementById('question-text');
+    const answerOptions = document.getElementById('answer-options');
+    const shortAnswerInput = document.getElementById('short-answer-input');
+    const submitButton = document.getElementById('submit-button');
+    const feedback = document.getElementById('feedback');
+    const conclusionSection = document.getElementById('conclusion');
+
+    // Chat AI elements
+    const chatButton = document.getElementById('chat-button');
+    const chatModal = document.getElementById('chat-modal');
+    const closeChatButton = document.getElementById('close-chat-button');
+    const chatBody = document.getElementById('chat-body');
+    const chatInput = document.getElementById('chat-input');
+    const sendChatButton = document.getElementById('send-chat-button');
+
+    // Function to save progress
+    function saveProgress() {
+        const progress = {
+            moduleIndex: currentModuleIndex,
+            username: username
+        };
+        localStorage.setItem('puppy_course_progress', JSON.stringify(progress));
+    }
+
+    // Function to load progress
+    function loadProgress() {
+        const progress = localStorage.getItem('puppy_course_progress');
+        if (progress) {
+            const savedProgress = JSON.parse(progress);
+            currentModuleIndex = savedProgress.moduleIndex;
+            username = savedProgress.username;
+            return true;
+        }
+        return false;
+    }
+
+    // Function to update progress bar
+    function updateProgressBar() {
+        const progress = (currentModuleIndex / totalModules) * 100;
+        progressBarFill.style.width = `${progress}%`;
+    }
+
+    // Function to render the current module
+    function renderModule() {
+        const allModules = Object.values(COURSE_CONTENT).flat();
+        if (currentModuleIndex >= totalModules) {
+            showConclusion();
+            return;
+        }
+
+        const currentModule = allModules[currentModuleIndex];
+        const currentPhaseTitle = Object.keys(COURSE_CONTENT).find(phase =>
+            COURSE_CONTENT[phase].includes(currentModule)
+        );
+
+        welcomeMessage.innerHTML = `¡Hola, ${username}! 🐾 <span class="text-gray-500 text-base font-normal">- ${currentPhaseTitle}</span>`;
+        moduleTitle.textContent = currentModule.title;
+        moduleContent.innerHTML = currentModule.content;
+        questionText.textContent = currentModule.question;
+        feedback.textContent = "";
+        feedback.classList.add('hidden');
+
+        // Handle different question types
+        shortAnswerInput.classList.add('hidden');
+        answerOptions.innerHTML = '';
+        if (currentModule.type === 'short-answer') {
+            shortAnswerInput.value = '';
+            shortAnswerInput.classList.remove('hidden');
+        } else {
+            // Future-proofing for multiple-choice questions
+            // (Not used in this version but a good practice)
+        }
+
+        updateProgressBar();
+        saveProgress();
+    }
+
+    // Function to handle quiz answer
+    function handleAnswer() {
+        const allModules = Object.values(COURSE_CONTENT).flat();
+        const currentModule = allModules[currentModuleIndex];
+        let userAnswer = "";
+
+        if (currentModule.type === 'short-answer') {
+            userAnswer = shortAnswerInput.value.trim().toLowerCase();
+        }
+
+        const correctAnswer = currentModule.answer.trim().toLowerCase();
+
+        if (userAnswer === correctAnswer) {
+            feedback.textContent = "¡Correcto! ¡Guau! 🐕";
+            feedback.classList.remove('hidden');
+            feedback.classList.remove('text-red-600');
+            feedback.classList.add('text-green-600');
+            setTimeout(() => {
+                currentModuleIndex++;
+                renderModule();
+            }, 1500);
+        } else {
+            feedback.textContent = "¡Incorrecto! Vuelve a revisar tu respuesta. 🧐";
+            feedback.classList.remove('hidden');
+            feedback.classList.remove('text-green-600');
+            feedback.classList.add('text-red-600');
+        }
+    }
+
+    // Function to show the conclusion screen
+    function showConclusion() {
+        mainContent.classList.add('hidden');
+        quizSection.classList.add('hidden');
+        conclusionSection.classList.remove('hidden');
+        localStorage.removeItem('puppy_course_progress'); // Clear progress on completion
+        updateProgressBar();
+    }
+
+    // Function to initialize Gemini chat
+    async function initGeminiChat() {
+        if (!GEMINI_API_KEY) {
+            console.error("API Key not found.");
+            return;
+        }
+
+        const { GoogleGenerativeAI } = await import('https://cdn.jsdelivr.net/npm/@google/generative-ai');
+        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+
+        chatModal.classList.remove('hidden');
+
+        async function handleGeminiQuery() {
+            const userQuery = chatInput.value;
+            if (!userQuery) return;
+
+            // Add user message to chat
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.textContent = userQuery;
+            chatBody.insertBefore(userMessageDiv, chatBody.firstChild);
+            chatInput.value = '';
+
+            try {
+                // Generate content with a prompt that sets the tone
+                const prompt = `Eres el Asistente de Campaña de Puppy Chiquito Político, un adorable cachorro que quiere ser diputado en México. Perteneces al **Partido Woof (Unidad de Organizaciones y Formación)**. Tu misión es responder preguntas sobre el curso de análisis de datos de la campaña. Mantén un tono divertido y profesional. Usa analogías perrunas siempre que puedas.
+                Contexto del curso: El curso enseña a usar Google Sheets y Looker Studio para limpiar datos, segmentar votantes y crear paneles de control. El material está en esta hoja de cálculo: https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0.
+                Pregunta del usuario: "${userQuery}"`;
+                
+                const result = await model.generateContent(prompt);
+                const response = await result.response;
+                const text = response.text();
+
+                // Add AI response to chat
+                const aiMessageDiv = document.createElement('div');
+                aiMessageDiv.className = 'message ai-message';
+                aiMessageDiv.textContent = text;
+                chatBody.insertBefore(aiMessageDiv, chatBody.firstChild);
+            } catch (error) {
+                console.error("Error al llamar a la API de Gemini:", error);
+                const errorMessageDiv = document.createElement('div');
+                errorMessageDiv.className = 'message ai-message';
+                errorMessageDiv.textContent = "¡Guau! Hubo un error al comunicarme con la central de campaña. Intenta de nuevo más tarde.";
+                chatBody.insertBefore(errorMessageDiv, chatBody.firstChild);
+            }
+        }
+
+        sendChatButton.addEventListener('click', handleGeminiQuery);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleGeminiQuery();
+            }
+        });
+    }
+
+    // Main application flow
+    function startCourse() {
+        const storedUsername = localStorage.getItem('puppy_course_username');
+        if (storedUsername) {
+            username = storedUsername;
+            splashScreen.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            if (loadProgress()) {
+                // Check if the course is already completed
+                const allModules = Object.values(COURSE_CONTENT).flat();
+                if (currentModuleIndex >= allModules.length) {
+                    showConclusion();
+                } else {
+                    renderModule();
+                }
+            } else {
+                currentModuleIndex = 0;
+                renderModule();
+            }
+        } else {
+            usernameInput.value = "";
+            usernameInput.focus();
+        }
+    }
+
+    // Event Listeners
+    startButton.addEventListener('click', () => {
+        username = usernameInput.value.trim();
+        if (username) {
+            localStorage.setItem('puppy_course_username', username);
+            splashScreen.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+            startCourse();
+        } else {
+            alert("¡Por favor, ingresa tu nombre para empezar!");
+        }
+    });
+
+    submitButton.addEventListener('click', handleAnswer);
+    shortAnswerInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            handleAnswer();
+        }
+    });
+
+    // Chat widget event listeners
+    chatButton.addEventListener('click', () => {
+        initGeminiChat();
+    });
+
+    closeChatButton.addEventListener('click', () => {
+        chatModal.classList.add('hidden');
+    });
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', startCourse);
+</script>
+
+</body>
+</html>
