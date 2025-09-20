@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis de Datos para la Campaña de Puppy: Partido Woof</title>
+    <title>Análisis de Datos para la Campaña de Puppy: Partido P.U.P.</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/css/icons.css">
     <style>
@@ -160,7 +160,7 @@
 <div id="app" class="p-8">
     <div id="splash-screen" class="container text-center flex flex-col items-center justify-center min-h-screen">
         <h1 class="text-4xl font-extrabold mb-4">¡Bienvenido a la Campaña de Puppy! 🐶</h1>
-        <p class="text-lg text-gray-600 mb-6">Estamos en el **Partido Woof (Unidad de Organizaciones y Formación)**. ¿Estás listo para convertirte en el mejor analista de datos de la campaña?</p>
+        <p class="text-lg text-gray-600 mb-6">Estamos en el **Partido P.U.P.**, un acrónimo de **"Patitas Unidas por el Pueblo"**. ¿Estás listo para convertirte en el mejor analista de datos de la campaña?</p>
         <div class="w-full max-w-sm">
             <input type="text" id="username-input" class="w-full p-3 border border-gray-300 rounded-lg mb-4 text-center" placeholder="Ingresa tu nombre perruno..."/>
             <button id="start-button" class="button-primary w-full">¡A mover la cola! 🐾</button>
@@ -188,7 +188,7 @@
 
         <div id="conclusion" class="hidden text-center">
             <h2 class="text-3xl font-bold text-green-600 mb-4">¡Guau! ¡Lo lograste! 🎉</h2>
-            <p class="text-lg mb-4">Has completado el entrenamiento de análisis de datos para la campaña de Puppy Chiquito Político, del **Partido Woof**. ¡Ahora eres un analista de datos de élite, listo para ayudar a Puppy a ganar! </p>
+            <p class="text-lg mb-4">Has completado el entrenamiento de análisis de datos para la campaña de Puppy Chiquito Político, del **Partido P.U.P.** ¡Ahora eres un analista de datos de élite, listo para ayudar a Puppy a ganar! </p>
             <p class="text-lg mb-4">El futuro de la campaña está en tus manos. ¡Usa tus nuevas habilidades para analizar, visualizar y conquistar los votos! 🐾</p>
         </div>
     </div>
@@ -196,7 +196,8 @@
 
 <div id="chat-widget" class="chat-widget">
     <button id="chat-button" class="chat-button">
-        <i class="ph-paw-print text-2xl"></i> </button>
+        <i class="ph-paw-print text-2xl"></i>
+    </button>
 </div>
 
 <div id="chat-modal" class="chat-modal hidden">
@@ -206,7 +207,7 @@
             <button id="close-chat-button" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
         </div>
         <div id="chat-body" class="chat-body">
-            <div class="message ai-message">¡Guau! Soy tu asistente de campaña del **Partido Woof (Unidad de Organizaciones y Formación)**. ¿En qué puedo ayudarte? Pregunta sobre el curso.</div>
+            <div class="message ai-message">¡Guau! Soy tu asistente de campaña del **Partido P.U.P.**, un acrónimo de **"Patitas Unidas por el Pueblo"**. ¿En qué puedo ayudarte? Pregunta sobre el curso.</div>
         </div>
         <div class="chat-input">
             <input type="text" id="chat-input" placeholder="Pregunta al asistente..." />
@@ -218,14 +219,14 @@
 </div>
 
 <script>
-    const GEMINI_API_KEY = "AIzaSyAisbDrYyve2jOmoXuSYbNKu5Z5FNSlB3E"; // Tu clave de API
+    const GEMINI_API_KEY = "AIzaSyAisbDrYyve2jOmoXuSYbNKu5Z5FNSlB3E";
 
     const COURSE_CONTENT = {
         "Fase 1: El Perro Sabio 🐶": [
             {
                 title: "Módulo 1: Limpieza de Datos 🧹",
                 content: `
-                    <p class="mb-4">¡Hora de la primera tarea! La campaña de Puppy Chiquito Político del **Partido Woof** tiene una lista de votantes un poco desordenada. Tu primera misión es limpiar los datos para que sean útiles. Es como si Puppy se sacudiera el lodo después de jugar en el parque.</p>
+                    <p class="mb-4">¡Hora de la primera tarea! La campaña de Puppy Chiquito Político del **Partido P.U.P.** tiene una lista de votantes un poco desordenada. Tu primera misión es limpiar los datos para que sean útiles. Es como si Puppy se sacudiera el lodo después de jugar en el parque.</p>
                     <h3 class="font-bold text-lg mb-2">Actividad 1: ¡A sacudirse el lodo! 🐾</h3>
                     <p class="mb-2">Abre la hoja de cálculo de Google Sheets: <a href="https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0" target="_blank" class="text-blue-500 hover:underline">¡Aquí está la lista de votantes!</a></p>
                     <p class="mb-2">1. Selecciona todas las columnas y ve a <strong>"Datos > Limpieza de datos > Quitar duplicados"</strong>.</p>
@@ -364,15 +365,11 @@
         feedback.textContent = "";
         feedback.classList.add('hidden');
 
-        // Handle different question types
         shortAnswerInput.classList.add('hidden');
         answerOptions.innerHTML = '';
         if (currentModule.type === 'short-answer') {
             shortAnswerInput.value = '';
             shortAnswerInput.classList.remove('hidden');
-        } else {
-            // Future-proofing for multiple-choice questions
-            // (Not used in this version but a good practice)
         }
 
         updateProgressBar();
@@ -383,12 +380,7 @@
     function handleAnswer() {
         const allModules = Object.values(COURSE_CONTENT).flat();
         const currentModule = allModules[currentModuleIndex];
-        let userAnswer = "";
-
-        if (currentModule.type === 'short-answer') {
-            userAnswer = shortAnswerInput.value.trim().toLowerCase();
-        }
-
+        let userAnswer = shortAnswerInput.value.trim().toLowerCase();
         const correctAnswer = currentModule.answer.trim().toLowerCase();
 
         if (userAnswer === correctAnswer) {
@@ -413,7 +405,7 @@
         mainContent.classList.add('hidden');
         quizSection.classList.add('hidden');
         conclusionSection.classList.remove('hidden');
-        localStorage.removeItem('puppy_course_progress'); // Clear progress on completion
+        localStorage.removeItem('puppy_course_progress');
         updateProgressBar();
     }
 
@@ -424,56 +416,64 @@
             return;
         }
 
-        const { GoogleGenerativeAI } = await import('https://cdn.jsdelivr.net/npm/@google/generative-ai');
-        const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+        try {
+            const { GoogleGenerativeAI } = await import('https://cdn.jsdelivr.net/npm/@google/generative-ai');
+            const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
-        chatModal.classList.remove('hidden');
+            chatModal.classList.remove('hidden');
+            
+            async function handleGeminiQuery() {
+                const userQuery = chatInput.value;
+                if (!userQuery.trim()) return;
 
-        async function handleGeminiQuery() {
-            const userQuery = chatInput.value;
-            if (!userQuery) return;
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'message user-message';
+                userMessageDiv.textContent = userQuery;
+                chatBody.insertBefore(userMessageDiv, chatBody.firstChild);
+                chatInput.value = '';
 
-            // Add user message to chat
-            const userMessageDiv = document.createElement('div');
-            userMessageDiv.className = 'message user-message';
-            userMessageDiv.textContent = userQuery;
-            chatBody.insertBefore(userMessageDiv, chatBody.firstChild);
-            chatInput.value = '';
+                try {
+                    const prompt = `Eres el Asistente de Campaña de Puppy Chiquito Político, un adorable cachorro que quiere ser diputado en México. Perteneces al **Partido P.U.P.**, acrónimo de **"Patitas Unidas por el Pueblo"**. Tu misión es responder preguntas sobre el curso de análisis de datos de la campaña. Mantén un tono divertido y profesional. Usa analogías perrunas siempre que puedas.
+                    Contexto del curso: El curso enseña a usar Google Sheets y Looker Studio para limpiar datos, segmentar votantes y crear paneles de control. El material está en esta hoja de cálculo: https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0.
+                    Pregunta del usuario: "${userQuery}"`;
+                    
+                    const result = await model.generateContent(prompt);
+                    const response = await result.response;
+                    const text = response.text();
 
-            try {
-                // Generate content with a prompt that sets the tone
-                const prompt = `Eres el Asistente de Campaña de Puppy Chiquito Político, un adorable cachorro que quiere ser diputado en México. Perteneces al **Partido Woof (Unidad de Organizaciones y Formación)**. Tu misión es responder preguntas sobre el curso de análisis de datos de la campaña. Mantén un tono divertido y profesional. Usa analogías perrunas siempre que puedas.
-                Contexto del curso: El curso enseña a usar Google Sheets y Looker Studio para limpiar datos, segmentar votantes y crear paneles de control. El material está en esta hoja de cálculo: https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0.
-                Pregunta del usuario: "${userQuery}"`;
-                
-                const result = await model.generateContent(prompt);
-                const response = await result.response;
-                const text = response.text();
-
-                // Add AI response to chat
-                const aiMessageDiv = document.createElement('div');
-                aiMessageDiv.className = 'message ai-message';
-                aiMessageDiv.textContent = text;
-                chatBody.insertBefore(aiMessageDiv, chatBody.firstChild);
-            } catch (error) {
-                console.error("Error al llamar a la API de Gemini:", error);
-                const errorMessageDiv = document.createElement('div');
-                errorMessageDiv.className = 'message ai-message';
-                errorMessageDiv.textContent = "¡Guau! Hubo un error al comunicarme con la central de campaña. Intenta de nuevo más tarde.";
-                chatBody.insertBefore(errorMessageDiv, chatBody.firstChild);
+                    const aiMessageDiv = document.createElement('div');
+                    aiMessageDiv.className = 'message ai-message';
+                    aiMessageDiv.textContent = text;
+                    chatBody.insertBefore(aiMessageDiv, chatBody.firstChild);
+                } catch (error) {
+                    console.error("Error al llamar a la API de Gemini:", error);
+                    const errorMessageDiv = document.createElement('div');
+                    errorMessageDiv.className = 'message ai-message';
+                    errorMessageDiv.textContent = "¡Guau! Hubo un error al comunicarme con la central de campaña. Intenta de nuevo más tarde.";
+                    chatBody.insertBefore(errorMessageDiv, chatBody.firstChild);
+                }
             }
+
+            sendChatButton.onclick = handleGeminiQuery;
+            chatInput.onkeydown = (e) => {
+                if (e.key === 'Enter') {
+                    handleGeminiQuery();
+                }
+            };
+        } catch (error) {
+            console.error("Error al cargar la biblioteca de Gemini:", error);
+            alert("No se pudo iniciar el Asistente de IA. Por favor, revisa la consola de tu navegador.");
         }
-
-        sendChatButton.addEventListener('click', handleGeminiQuery);
-        chatInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                handleGeminiQuery();
-            }
-        });
     }
 
-    // Main application flow
+    function closeChat() {
+        chatModal.classList.add('hidden');
+        chatInput.value = '';
+        sendChatButton.onclick = null;
+        chatInput.onkeydown = null;
+    }
+
     function startCourse() {
         const storedUsername = localStorage.getItem('puppy_course_username');
         if (storedUsername) {
@@ -481,7 +481,6 @@
             splashScreen.classList.add('hidden');
             mainContent.classList.remove('hidden');
             if (loadProgress()) {
-                // Check if the course is already completed
                 const allModules = Object.values(COURSE_CONTENT).flat();
                 if (currentModuleIndex >= allModules.length) {
                     showConclusion();
@@ -498,7 +497,6 @@
         }
     }
 
-    // Event Listeners
     startButton.addEventListener('click', () => {
         username = usernameInput.value.trim();
         if (username) {
@@ -518,18 +516,10 @@
         }
     });
 
-    // Chat widget event listeners
-    chatButton.addEventListener('click', () => {
-        initGeminiChat();
-    });
+    chatButton.addEventListener('click', initGeminiChat);
+    closeChatButton.addEventListener('click', closeChat);
 
-    closeChatButton.addEventListener('click', () => {
-        chatModal.classList.add('hidden');
-    });
-
-    // Initial load
     document.addEventListener('DOMContentLoaded', startCourse);
 </script>
-
 </body>
 </html>
