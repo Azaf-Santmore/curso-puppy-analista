@@ -3,624 +3,1086 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis de Datos para la Campaña de Puppy: Partido P.U.P.</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.0.3/src/css/icons.css">
+    <title>Curso: El Sabueso de Datos Políticos 🐾</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #434343; /* Gris oscuro para el texto */
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0a09; /* Zinc-950 */
+            color: #d1d5db; /* Gray-300 */
+            overflow: hidden; /* Hide main body overflow */
         }
-        .container {
-            max-width: 1200px;
-            min-height: 100vh;
-            display: flex;
-            background-color: #f0f4f8;
+        .neon-border {
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #10b981, #f43f5e, #8b5cf6, #06b6d4) 1;
+            box-shadow: 0 0 15px #f43f5e, 0 0 30px #8b5cf6;
         }
-        .sidebar {
-            width: 300px;
-            background-color: #fff;
-            padding: 2rem;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+        .neon-text {
+            text-shadow: 0 0 5px #f43f5e, 0 0 10px #8b5cf6;
         }
-        .sidebar-item {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
+        .module-card {
+            background: rgba(15, 23, 42, 0.7); /* Slate-900 with transparency */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5); /* Slate-700 with transparency */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.2);
         }
-        .sidebar-item:hover {
-            background-color: #e2e8f0;
+        .progress-line {
+            height: 2px;
+            background-color: #4b5563;
         }
-        .sidebar-item.active {
-            background-color: #f7a233;
-            color: white;
-            font-weight: 600;
+        .progress-line-completed {
+            background-color: #10b981;
         }
-        .main-content {
-            flex-grow: 1;
-            padding: 2rem;
-            background-color: #f0f4f8;
-            position: relative;
-        }
-        .progress-bar {
-            height: 8px;
-            background-color: #e2e8f0;
-            border-radius: 4px;
-            margin-bottom: 2rem;
-            overflow: hidden;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            background-color: #f7a233;
-            transition: width 0.5s ease-in-out;
-        }
-        .button-primary {
-            background-color: #f7a233;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        .button-primary:hover {
-            background-color: #e0912d;
-        }
-        .button-secondary {
-            background-color: #e2e8f0;
-            color: #434343;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        .button-secondary:hover {
-            background-color: #cbd5e1;
-        }
-        .chat-widget {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 100;
-        }
-        .chat-button {
-            background-color: #f7a233;
-            color: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        .chat-button:hover {
-            transform: scale(1.1);
-        }
-        .chat-modal {
+        #chat-modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
         }
         .chat-content {
-            background-color: white;
-            width: 90%;
-            max-width: 500px;
-            height: 70%;
+            background-color: #1f2937;
             border-radius: 1rem;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 0 20px #3b82f6;
         }
-        .chat-header {
-            background-color: #f1f5f9;
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
+        .draggable {
+            cursor: grab;
+            transition: transform 0.2s;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+        .dropzone {
+            min-height: 4rem;
+            border: 2px dashed #64748b;
+            border-radius: 0.5rem;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        .chat-body {
-            flex-grow: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column-reverse;
-        }
-        .message {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            margin-bottom: 0.75rem;
-        }
-        .user-message {
-            background-color: #f7a233;
-            color: white;
-            align-self: flex-end;
-        }
-        .ai-message {
-            background-color: #e2e8f0;
-            color: #434343;
-            align-self: flex-start;
-        }
-        .chat-input {
-            padding: 1rem;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-        }
-        .chat-input input {
-            flex-grow: 1;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-            margin-right: 0.5rem;
-        }
-        .chat-input button {
-            background-color: #1e293b;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-        }
-        .hidden {
-            display: none;
-        }
-        .quiz-option {
-            background-color: #fff;
-            border: 2px solid #cbd5e1;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
+            justify-content: center;
+            text-align: center;
             transition: all 0.2s;
         }
-        .quiz-option:hover {
-            border-color: #f7a233;
-            transform: translateY(-2px);
+        .dropzone.hovered {
+            background-color: rgba(100, 116, 139, 0.2);
+            border-color: #3b82f6;
+            border-style: solid;
         }
-        .quiz-option.selected {
-            background-color: #f7a233;
-            color: white;
-            border-color: #f7a233;
+        /* Sidebar Styling */
+        #sidebar {
+            width: 250px;
+            background: rgba(22, 28, 42, 0.9);
+            border-right: 1px solid rgba(51, 65, 85, 0.5);
+            padding: 1rem;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 50;
+        }
+        #course-content-container {
+            margin-left: 250px;
+            padding: 2rem;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        @media (max-width: 1024px) {
+            #sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            }
+            #course-content-container {
+                margin-left: 0;
+                padding-top: 1rem;
+            }
+        }
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            color: #9ca3af;
+        }
+        .sidebar-item.completed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        .sidebar-item.active {
+            background-color: rgba(244, 63, 94, 0.1);
+            color: #f43f5e;
+            transform: scale(1.05);
+        }
+        .sidebar-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        pre {
+            background-color: #1e293b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        /* Nueva animación para el botón del asistente */
+        @keyframes bounce-animation {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.1) translateY(-5px); }
+        }
+        .animate-bounce {
+            animation: bounce-animation 2s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-950 text-gray-300">
 
-<div id="app" class="container">
-    <div id="splash-screen" class="w-full text-center flex flex-col items-center justify-center">
-        <h1 class="text-5xl font-extrabold mb-4 text-gray-800">¡Bienvenido a la Campaña de Puppy! 🐶</h1>
-        <p class="text-xl text-gray-600 mb-6">Estamos en el **Partido P.U.P. (Patitas Unidas por el Pueblo)**, ¿estás listo para unirte a nuestro equipo de analistas de datos?</p>
-        <div class="w-full max-w-sm">
-            <input type="text" id="username-input" class="w-full p-3 border-2 border-gray-300 rounded-lg mb-4 text-center" placeholder="Ingresa tu nombre perruno..."/>
-            <button id="start-button" class="button-primary w-full text-xl py-3">¡A mover la cola! 🐾</button>
-        </div>
-    </div>
-
-    <div id="main-course" class="w-full flex hidden">
-        <div class="sidebar">
-            <h2 class="text-2xl font-bold mb-6">Mapa de Campaña 🗺️</h2>
-            <div id="sidebar-menu"></div>
-        </div>
-
-        <div class="main-content">
-            <div id="progress-container" class="mb-8">
-                <div class="flex justify-between items-center mb-2">
-                    <span id="current-phase" class="font-semibold text-gray-600 text-sm"></span>
-                    <span id="progress-percentage" class="font-semibold text-gray-600 text-sm">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
-                </div>
-            </div>
-
-            <div id="module-display" class="bg-white p-8 rounded-xl shadow-lg">
-                <h1 id="welcome-message" class="text-3xl font-bold mb-4"></h1>
-                <h2 id="module-title" class="text-2xl font-semibold text-gray-700 mb-6"></h2>
-                
-                <div id="module-content"></div>
-
-                <div id="quiz-section" class="mt-8 pt-4 border-t border-gray-200">
-                    <p id="question-text" class="text-lg font-medium mb-4 text-gray-800"></p>
-                    <div id="answer-options" class="flex flex-col"></div>
-                    <input type="text" id="short-answer-input" class="w-full p-3 border-2 border-gray-300 rounded-lg hidden" placeholder="Escribe tu respuesta aquí...">
-                    <div id="feedback" class="mt-4 text-center font-bold hidden"></div>
-                    <button id="submit-button" class="button-primary mt-6 w-full text-lg">Comprobar y avanzar ➡️</button>
-                </div>
-            </div>
-
-            <div id="conclusion" class="hidden text-center bg-white p-10 rounded-xl shadow-lg mt-8">
-                <h2 class="text-4xl font-bold text-green-600 mb-4">¡Guau! ¡Lo lograste! 🎉</h2>
-                <p class="text-xl mb-4 text-gray-700">Has completado tu entrenamiento para la campaña del **Partido P.U.P.** ¡Ahora eres un analista de datos de élite, listo para ayudar a Puppy a ganar!</p>
-                <p class="text-xl text-gray-700 mb-6">El futuro de la campaña está en tus manos. ¡Usa tus nuevas habilidades para analizar, visualizar y conquistar los votos! 🐾</p>
-                <button id="restart-button" class="button-secondary text-lg">Reiniciar Curso</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="chat-widget" class="chat-widget">
-    <button id="chat-button" class="chat-button">
-        <i class="ph-paw-print text-3xl"></i>
-    </button>
-</div>
-
-<div id="chat-modal" class="chat-modal hidden">
-    <div class="chat-content">
-        <div class="chat-header">
-            <h3 class="text-xl font-bold text-gray-800">Asistente de Campaña 🐶</h3>
-            <button id="close-chat-button" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
-        </div>
-        <div id="chat-body" class="chat-body">
-            <div class="message ai-message">¡Guau! Soy tu asistente de campaña del **Partido P.U.P.**, acrónimo de **"Patitas Unidas por el Pueblo"**. ¿En qué puedo ayudarte? Pregunta sobre el curso.</div>
-        </div>
-        <div class="chat-input">
-            <input type="text" id="chat-input" placeholder="Pregunta al asistente..." />
-            <button id="send-chat-button">
-                <i class="ph-paper-plane-right text-white text-lg"></i>
-            </button>
-        </div>
-    </div>
-</div>
-
-<script>
-    const GEMINI_API_KEY = "AIzaSyAisbDrYyve2jOmoXuSYbNKu5Z5FNSlB3E";
-
-    const COURSE_CONTENT = {
-        "Fase 1: El Perro Sabio 🐶": [
-            {
-                title: "Módulo 1: Limpieza de Datos 🧹",
-                content: `
-                    <p class="mb-4">¡Hora de la primera tarea! La campaña de Puppy Chiquito Político del **Partido P.U.P.** tiene una lista de votantes un poco desordenada. Tu primera misión es limpiar los datos para que sean útiles. Es como si Puppy se sacudiera el lodo después de jugar en el parque.</p>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800">Actividad: ¡A sacudirse el lodo! 🐾</h3>
-                    <p class="mb-2">Abre la hoja de cálculo de Google Sheets: <a href="https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0" target="_blank" class="text-blue-500 hover:underline font-semibold">Haz clic aquí para abrir la hoja de datos</a>.</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                        <li>1. **Eliminar duplicados:** En la hoja de cálculo, selecciona todas las columnas. Ve a la barra de menú, haz clic en **"Datos"**, luego en **"Limpieza de datos"** y finalmente **"Quitar duplicados"**.</li>
-                        <li>2. **Buscar y reemplazar:** Aún con la hoja seleccionada, usa el atajo **\`Ctrl + H\`** (o \`Cmd + H\` en Mac). En el campo "Buscar", escribe "Mora". En el campo "Reemplazar con", escribe "Morena". Haz clic en "Reemplazar todo". Esto es como enseñarle a Puppy a no ladrarle a los carteros.</li>
-                    </ul>
-                    <div class="mt-6 p-4 bg-gray-100 rounded-lg border border-gray-200">
-                        <p class="text-sm text-gray-600 italic">**Dato útil:** En Google Sheets, el "Voto de Encuesta" y el "Comentarios de Encuesta" solo nos dicen la intención de voto, no el voto real. ¡Los datos son nuestros mejores amigos!</p>
+    <!-- Pantalla de Inicio -->
+    <div id="intro-screen" class="w-full h-screen flex flex-col items-center justify-center p-8">
+        <div class="w-full max-w-lg p-8 module-card rounded-xl">
+            <div class="flex flex-col items-center text-center">
+                <h1 class="text-4xl font-bold neon-text text-cyan-400 mb-4">¡Curso de Entrenamiento Canino Político! 🐶</h1>
+                <p class="mb-6 text-gray-400">
+                    ¡Bienvenido, futuro sabueso de datos! Puppy Chiquito Político necesita de tu ayuda para su campaña.
+                    Antes de empezar a olfatear datos, necesitamos que nos des tu información.
+                </p>
+                <form id="start-form" class="w-full space-y-4">
+                    <div>
+                        <label for="dog-name" class="block mb-2 text-sm font-medium text-cyan-300">¿Cuál es tu nombre perruno? 🐾</label>
+                        <input type="text" id="dog-name" placeholder="Ej: Fido El Audaz" required class="w-full p-3 rounded-lg bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none focus:border-cyan-500">
                     </div>
+                    <div>
+                        <label for="full-name" class="block mb-2 text-sm font-medium text-cyan-300">Tu nombre completo (para el certificado) 🏅</label>
+                        <input type="text" id="full-name" placeholder="Ej: John Doe" required class="w-full p-3 rounded-lg bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 mt-4 text-lg font-bold rounded-lg text-white transition-all duration-300 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                        ¡A Cazar Datos! 🐕
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pantalla del Curso con Sidebar -->
+    <div id="course-screen" class="hidden lg:flex w-full h-screen">
+        <!-- Sidebar de navegación -->
+        <nav id="sidebar" class="w-1/4 max-w-xs flex flex-col">
+            <h3 class="text-2xl font-bold neon-text text-cyan-400 mb-4">Temario 📜</h3>
+            <div id="sidebar-modules" class="flex-grow space-y-2"></div>
+        </nav>
+        
+        <!-- Contenido principal del curso -->
+        <main id="course-content-container" class="flex-grow">
+            <h2 id="course-title" class="text-3xl font-bold neon-text text-cyan-400 mb-4 text-center"></h2>
+            <div id="module-container" class="min-h-[500px]">
+                <!-- Contenido del módulo y preguntas se renderizarán aquí -->
+            </div>
+            <button id="next-module-button" class="w-full py-3 mt-8 text-lg font-bold rounded-lg text-white transition-all duration-300 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 hidden">
+                Siguiente Módulo
+            </button>
+        </main>
+    </div>
+
+    <!-- Botón del Asistente de IA -->
+    <button id="ai-assistant-button" class="fixed bottom-8 right-8 z-50 w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-4xl shadow-lg hover:scale-110 transition-transform duration-300 cursor-pointer animate-bounce">
+        🐶
+    </button>
+
+    <!-- Modal del Asistente de IA -->
+    <div id="chat-modal" class="fixed inset-0 flex items-center justify-center p-4 z-[1000]">
+        <div class="chat-content w-full max-w-md h-3/4 flex flex-col p-4 rounded-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-cyan-300">Asistente de Campaña 🐕‍🦺</h3>
+                <button id="close-chat-button" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 p-2 bg-gray-800 rounded-lg mb-4">
+                <div class="text-center text-gray-400 italic">¡Guau! Estoy listo para ayudarte. ¿En qué tienes dudas?</div>
+            </div>
+            <div class="flex">
+                <input type="text" id="chat-input" placeholder="Pregúntale al Asistente..." class="flex-grow p-3 rounded-l-lg bg-gray-700 text-white focus:outline-none border border-gray-600">
+                <button id="send-chat-button" class="px-4 py-3 bg-blue-600 rounded-r-lg text-white hover:bg-blue-700 transition-colors duration-200">
+                    Enviar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuración de la API de Gemini y el curso
+        const API_KEY = "AIzaSyAisbDrYyve2jOmoXuSYbNKu5Z5FNSlB3E";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+        const resourcesLink = "https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit?usp=sharing";
+
+        // Estado de la aplicación
+        let currentModuleIndex = 0;
+        let userName = '';
+        let fullName = '';
+        let completedModules = [];
+        let score = 0;
+        let isFinalModule = false;
+
+        // Contenido del curso
+        const modules = [
+            {
+                phase: 'Fase 1: El Olfato Analítico 🐾',
+                title: 'Módulo 1: Presentando a Puppy y su Partido PUP',
+                emoji: '🐶',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Conoce a Puppy Chiquito Político y el Partido PUP</h3>
+                    <p class="text-gray-400 mb-4">
+                        ¡Guau! ¡Bienvenido, futuro sabueso de datos! Puppy Chiquito Político, un adorable cachorro mestizo de la CDMX, tiene un gran sueño: ser diputado para mejorar la vida de todos. . Su partido se llama **PUP: Patitas Unidas para el Pueblo**. 🐾 Juntos, vamos a usar el poder de los datos para ganar la elección. ¡Tu primera misión es aprender a olfatear los datos correctos!
+                    </p>
                 `,
-                question: "Después de la limpieza de datos, ¿cuántos votantes únicos te quedan en total?",
-                type: "short-answer",
-                answer: "217",
-                resources: "https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0"
+                type: 'multipleChoice',
+                question: '¿Cuál es el nombre del partido de Puppy Chiquito Político?',
+                options: ['Perros Unidos Partidarios', 'Patitas Unidas para el Pueblo', 'Perros Urbanos y Patriotas'],
+                answer: 'Patitas Unidas para el Pueblo'
             },
             {
-                title: "Módulo 2: Segmentación de Datos 📊",
+                phase: 'Fase 1: El Olfato Analítico 🐾',
+                title: 'Módulo 2: El Recinto Canino: Tu primer Google Sheet',
+                emoji: '📊',
                 content: `
-                    <p class="mb-4">Un buen analista sabe que no todos los votantes son iguales. Ahora que los datos están limpios, es momento de clasificarlos por categorías. Es como si Puppy distinguiera a los dueños que le dan premios de los que solo le dan un abrazo.</p>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800">Actividad: ¡A contar las patitas! 🐕</h3>
-                    <p class="mb-2">Abre tu hoja de cálculo y sigue estos pasos:</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                        <li>1. **Crea una nueva columna:** Inserta una columna a un lado de la columna "Edad" y nómbrala **"Grupo de Edad"**.</li>
-                        <li>2. **Clasifica a los votantes:** Usa la fórmula \`SI.CONJUNTO\` para clasificar a cada votante. Copia y pega esta fórmula en la primera celda de tu nueva columna (después del encabezado) y arrástrala hacia abajo:
-                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">\`=SI.CONJUNTO(E2<35, "Joven", E2<60, "Adulto", VERDADERO, "Veterano")\`</pre>
-                        Esto agrupa a los votantes en **"Jóvenes"** (menores de 35), **"Adultos"** (de 35 a 59), y **"Veteranos"** (60 o más).</li>
-                        <li>3. **Cuenta los grupos:** En una celda aparte, usa la función \`CONTAR.SI\` para contar cuántos votantes hay en cada grupo de edad. Por ejemplo:
-                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">\`=CONTAR.SI(F:F, "Joven")\`</pre></li>
-                    </ul>
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Preparar el Recinto Canino! 📊</h3>
+                    <p class="text-gray-400 mb-4">
+                        ¡La campaña ha empezado! El primer paso es organizar la información de los votantes. La herramienta principal de nuestro equipo es Google Sheets. Piensa en ella como un gran parque lleno de datos, donde cada hoja es un área cercada y cada celda una huella. ¡Es el lugar perfecto para organizar toda la información de nuestros votantes! 🐾
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                        Para esta actividad, dirígete al tazón de recursos y haz una copia para tu propio uso.
+                    </p>
+                    <div class="flex justify-center mt-6">
+                        <a href="https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit?usp=sharing" target="_blank" class="py-3 px-6 text-lg font-bold rounded-lg text-white transition-all duration-300 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
+                            Ir al Tazón de Recursos 🐾
+                        </a>
+                    </div>
                 `,
-                question: "Según tu segmentación, ¿cuántos votantes 'Adultos' hay en la lista?",
-                type: "short-answer",
-                answer: "103"
-            }
-        ],
-        "Fase 2: El Cartógrafo de Datos 🗺️": [
+                type: 'multipleChoice',
+                question: 'En el tazón de recursos, ¿qué columna representa el tipo de votante de acuerdo con su afinidad por perros o gatos?',
+                options: ['Nombre_Completo', 'Tipo_Votante', 'Voto_Encuesta'],
+                answer: 'Tipo_Votante'
+            },
             {
-                title: "Módulo 3: El Poder de VLOOKUP y QUERY 🔍",
+                phase: 'Fase 1: El Olfato Analítico 🐾',
+                title: 'Módulo 3: La Pista de Huellas: Datos Sucios vs. Limpios',
+                emoji: '🔍',
                 content: `
-                    <p class="mb-4">Para encontrar el votante perfecto para Puppy, necesitamos cruzar información. Esto es como buscar tu juguete favorito en el jardín, usando el olfato y la vista al mismo tiempo.</p>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800">Actividad: ¡Encuentra el hueso! 🦴</h3>
-                    <p class="mb-2">Abre la hoja de cálculo y ve a la hoja "Votantes" y "Tipo de votante".</p>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                        <li>1. **Cruza los datos con \`VLOOKUP\`:** En la hoja "Votantes", crea una nueva columna llamada **"Tipo de Votante"**. En la primera celda, usa la fórmula \`BUSCARV\` (o \`VLOOKUP\` en inglés) para traer el "Tipo de votante" de la Hoja 2 ("Tipo de votante") basado en el \`ID_Votante\`.</li>
-                        <li>2. **Filtra con \`QUERY\`:** En una hoja nueva, usa la función \`QUERY\` para crear un filtro avanzado que muestre a todos los "Jóvenes" que viven en la colonia "La Roma" y que son "Indecisos". Tu fórmula lucirá algo así:
-                        <pre class="bg-gray-100 p-3 rounded-md text-sm my-2">\`=QUERY(A:G, "SELECT * WHERE G = 'Joven' AND D = 'La Roma' AND C = 'Indeciso'")\`</pre></li>
-                    </ul>
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Olfatea la suciedad! 🔍</h3>
+                    <p class="text-gray-400 mb-4">
+                        Al recolectar la información, algunas huellas (los datos) están llenas de barro: nombres mal escritos, edades que no tienen sentido, campos vacíos. Esto es lo que llamamos "datos sucios". Nuestro trabajo como sabuesos es limpiar este barro para que el camino sea claro. 🧼
+                    </p>
+                    <p class="text-gray-400">
+                        Mira los datos que tenemos. La limpieza es el primer paso.
+                    </p>
                 `,
-                question: "Usando QUERY, ¿cuántos votantes 'Jóvenes' en 'La Roma' son 'Indecisos'?",
-                type: "short-answer",
-                answer: "5"
-            }
-        ],
-        "Fase 3: El Visionario de la Campaña 🧠": [
+                type: 'dragAndDrop',
+                question: '¡Guau! Arrastra la tarjeta que representa un "dato sucio" y "dato limpio" basado en el tipo de votante de nuestra tabla.',
+                dragItems: [
+                    { id: 'item-1', text: 'Amante de gatos' },
+                    { id: 'item-2', text: 'amantedegatos' }
+                ],
+                dropTargets: [
+                    { id: 'target-1', text: 'Dato Limpio ✨' },
+                    { id: 'target-2', text: 'Dato Sucio 💩' }
+                ],
+                correctMapping: {
+                    'item-1': 'target-1',
+                    'item-2': 'target-2'
+                }
+            },
             {
-                title: "Módulo 4: Creación de Paneles Interactivos 📊",
+                phase: 'Fase 2: Estrategia de Manada 🐶',
+                title: 'Módulo 4: El Rastreador GPS: Usando BUSCARX',
+                emoji: '📍',
                 content: `
-                    <p class="mb-4">¡Es hora de hacer que los datos de la campaña brillen! Los paneles de control son como un mapa del parque para Puppy, mostrándole dónde están los mejores lugares para jugar.</p>
-                    <h3 class="font-bold text-lg mb-2 text-gray-800">Actividad: ¡A dibujar el mapa! 🎨</h3>
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
-                        <li>1. **Conecta los datos:** Ve a <a href="https://lookerstudio.google.com/" target="_blank" class="text-blue-500 hover:underline font-semibold">Google Looker Studio</a> y crea un nuevo informe en blanco. Selecciona **"Google Sheets"** como tu fuente de datos y elige tu hoja de cálculo de Puppy.</li>
-                        <li>2. **Crea un gráfico de pastel:** Agrega un gráfico de pastel (Pie chart) que muestre la distribución de votantes por **"Grupo de Edad"** (Jóvenes, Adultos, Veteranos).</li>
-                        <li>3. **Crea un cuadro de mando:** Añade una tarjeta de puntuación (Scorecard) que muestre el **"Recuento de Votantes"** totales.</li>
-                        <li>4. **¡Un mapa de calor!:** Agrega un mapa que muestre el recuento de votantes por cada **"Colonia"** para ver dónde está el apoyo de Puppy.</li>
-                    </ul>
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡No más vueltas en círculos! 🗺️</h3>
+                    <p class="text-gray-400 mb-4">
+                        Puppy quiere mandarle un huesito personalizado a un votante con "ID_Votante" **V004**, pero necesita su colonia. Con la función **=BUSCARX()**, podemos encontrar cualquier dato sin importar dónde esté. Es nuestro rastreador GPS para los votantes. Es más poderosa y flexible que BUSCARV y BUSCARH. Es ideal para encontrar un dato de forma precisa y rápida.
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                        Su sintaxis es simple: **=BUSCARX(lo_que_buscas, rango_donde_buscar, rango_donde_devolver)**
+                    </p>
                 `,
-                question: "En el gráfico que creaste en Looker Studio, ¿qué porcentaje de los votantes totales son 'Veteranos'?",
-                type: "short-answer",
-                answer: "29%"
-            }
-        ]
-    };
-
-    let currentModuleIndex = 0;
-    let username = "";
-    const totalModules = Object.values(COURSE_CONTENT).flat().length;
-    
-    const splashScreen = document.getElementById('splash-screen');
-    const mainCourse = document.getElementById('main-course');
-    const usernameInput = document.getElementById('username-input');
-    const startButton = document.getElementById('start-button');
-    const sidebarMenu = document.getElementById('sidebar-menu');
-    const welcomeMessage = document.getElementById('welcome-message');
-    const progressBarFill = document.getElementById('progress-bar-fill');
-    const progressPercentage = document.getElementById('progress-percentage');
-    const currentPhase = document.getElementById('current-phase');
-    const moduleTitle = document.getElementById('module-title');
-    const moduleContent = document.getElementById('module-content');
-    const quizSection = document.getElementById('quiz-section');
-    const questionText = document.getElementById('question-text');
-    const answerOptions = document.getElementById('answer-options');
-    const shortAnswerInput = document.getElementById('short-answer-input');
-    const submitButton = document.getElementById('submit-button');
-    const feedback = document.getElementById('feedback');
-    const conclusionSection = document.getElementById('conclusion');
-    const restartButton = document.getElementById('restart-button');
-
-    const chatButton = document.getElementById('chat-button');
-    const chatModal = document.getElementById('chat-modal');
-    const closeChatButton = document.getElementById('close-chat-button');
-    const chatBody = document.getElementById('chat-body');
-    const chatInput = document.getElementById('chat-input');
-    const sendChatButton = document.getElementById('send-chat-button');
-
-    function saveProgress() {
-        const progress = { moduleIndex: currentModuleIndex, username: username };
-        localStorage.setItem('puppy_course_progress', JSON.stringify(progress));
-    }
-
-    function loadProgress() {
-        const progress = localStorage.getItem('puppy_course_progress');
-        if (progress) {
-            const savedProgress = JSON.parse(progress);
-            currentModuleIndex = savedProgress.moduleIndex;
-            username = savedProgress.username;
-            return true;
-        }
-        return false;
-    }
-
-    function updateProgressBar() {
-        const progress = (currentModuleIndex / totalModules) * 100;
-        progressBarFill.style.width = `${progress}%`;
-        progressPercentage.textContent = `${Math.round(progress)}%`;
-    }
-
-    function renderModule(moduleIndex) {
-        const allModules = Object.values(COURSE_CONTENT).flat();
-        if (moduleIndex >= totalModules) {
-            showConclusion();
-            return;
-        }
-
-        currentModuleIndex = moduleIndex;
-        const currentModule = allModules[currentModuleIndex];
-        const currentPhaseTitle = Object.keys(COURSE_CONTENT).find(phase =>
-            COURSE_CONTENT[phase].includes(currentModule)
-        );
-
-        welcomeMessage.innerHTML = `¡Hola, ${username}! 🐾`;
-        currentPhase.textContent = currentPhaseTitle;
-        moduleTitle.textContent = currentModule.title;
-        moduleContent.innerHTML = currentModule.content;
-        questionText.textContent = currentModule.question;
-        feedback.textContent = "";
-        feedback.classList.add('hidden');
-        submitButton.textContent = "Comprobar y avanzar ➡️";
-
-        shortAnswerInput.classList.remove('hidden');
-        shortAnswerInput.value = '';
-        answerOptions.innerHTML = '';
-        
-        updateSidebar();
-        updateProgressBar();
-        saveProgress();
-    }
-
-    function handleAnswer() {
-        const allModules = Object.values(COURSE_CONTENT).flat();
-        const currentModule = allModules[currentModuleIndex];
-        let userAnswer = shortAnswerInput.value.trim().toLowerCase();
-        const correctAnswer = currentModule.answer.trim().toLowerCase();
-
-        if (userAnswer === correctAnswer) {
-            feedback.textContent = "¡Correcto! ¡Guau! 🐕";
-            feedback.classList.remove('hidden');
-            feedback.classList.remove('text-red-600');
-            feedback.classList.add('text-green-600');
-            setTimeout(() => {
-                currentModuleIndex++;
-                renderModule(currentModuleIndex);
-            }, 1500);
-        } else {
-            feedback.textContent = "¡Incorrecto! Vuelve a revisar tu respuesta. 🧐";
-            feedback.classList.remove('hidden');
-            feedback.classList.remove('text-green-600');
-            feedback.classList.add('text-red-600');
-        }
-    }
-
-    function showConclusion() {
-        mainCourse.classList.add('hidden');
-        conclusionSection.classList.remove('hidden');
-        localStorage.removeItem('puppy_course_progress');
-        updateProgressBar();
-    }
-
-    function buildSidebar() {
-        sidebarMenu.innerHTML = '';
-        let moduleCounter = 0;
-        Object.keys(COURSE_CONTENT).forEach(phase => {
-            const phaseTitle = document.createElement('h3');
-            phaseTitle.className = "text-xl font-bold mt-4 mb-2 text-gray-800";
-            phaseTitle.textContent = phase;
-            sidebarMenu.appendChild(phaseTitle);
-
-            COURSE_CONTENT[phase].forEach(module => {
-                const moduleItem = document.createElement('div');
-                moduleItem.className = "sidebar-item";
-                moduleItem.textContent = module.title;
-                moduleItem.dataset.index = moduleCounter;
-                moduleItem.addEventListener('click', () => {
-                    renderModule(parseInt(moduleItem.dataset.index));
-                });
-                sidebarMenu.appendChild(moduleItem);
-                moduleCounter++;
-            });
-        });
-    }
-
-    function updateSidebar() {
-        const sidebarItems = document.querySelectorAll('.sidebar-item');
-        sidebarItems.forEach((item, index) => {
-            if (index <= currentModuleIndex) {
-                item.classList.add('active');
-            } else {
-                item.classList.remove('active');
-            }
-        });
-    }
-
-    async function initGeminiChat() {
-        if (!GEMINI_API_KEY) {
-            console.error("API Key not found.");
-            return;
-        }
-
-        try {
-            const { GoogleGenerativeAI } = await import('https://cdn.jsdelivr.net/npm/@google/generative-ai');
-            const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
-
-            chatModal.classList.remove('hidden');
-            
-            async function handleGeminiQuery() {
-                const userQuery = chatInput.value;
-                if (!userQuery.trim()) return;
-
-                const userMessageDiv = document.createElement('div');
-                userMessageDiv.className = 'message user-message';
-                userMessageDiv.textContent = userQuery;
-                chatBody.insertBefore(userMessageDiv, chatBody.firstChild);
-                chatInput.value = '';
-
-                try {
-                    const prompt = `Eres el Asistente de Campaña de Puppy Chiquito Político, un adorable cachorro que quiere ser diputado en México. Perteneces al **Partido P.U.P.**, acrónimo de **"Patitas Unidas por el Pueblo"**. Tu misión es responder preguntas sobre el curso de análisis de datos de la campaña. Mantén un tono divertido y profesional. Usa analogías perrunas siempre que puedas.
-                    Contexto del curso: El curso enseña a usar Google Sheets y Looker Studio para limpiar datos, segmentar votantes y crear paneles de control. El material está en esta hoja de cálculo: https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit#gid=0.
-                    Pregunta del usuario: "${userQuery}"`;
-                    
-                    const result = await model.generateContent(prompt);
-                    const response = await result.response;
-                    const text = response.text();
-
-                    const aiMessageDiv = document.createElement('div');
-                    aiMessageDiv.className = 'message ai-message';
-                    aiMessageDiv.textContent = text;
-                    chatBody.insertBefore(aiMessageDiv, chatBody.firstChild);
-                } catch (error) {
-                    console.error("Error al llamar a la API de Gemini:", error);
-                    const errorMessageDiv = document.createElement('div');
-                    errorMessageDiv.className = 'message ai-message';
-                    errorMessageDiv.textContent = "¡Guau! Hubo un error al comunicarme con la central de campaña. Intenta de nuevo más tarde.";
-                    chatBody.insertBefore(errorMessageDiv, chatBody.firstChild);
+                type: 'multipleChoice',
+                question: 'Si Puppy quiere saber en qué colonia vive el votante con "ID_Votante" V004, ¿qué fórmula usarías?',
+                options: ['=BUSCARV("V004", A:D, 4, FALSO)', '=BUSCARX("V004", A:A, D:D)', '=BUSCARX("V004", D:D, A:A)'],
+                answer: '=BUSCARX("V004", A:A, D:D)'
+            },
+            {
+                phase: 'Fase 2: Estrategia de Manada 🐶',
+                title: 'Módulo 5: El Olfato de Grupo: Filtrando datos con FILTER',
+                emoji: '👃',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Olfateando solo a los importantes! 👃</h3>
+                    <p class="text-gray-400 mb-4">
+                        Puppy planea un evento en el Parque México y solo necesita la lista de votantes de la colonia **Condesa**. Con la función **=FILTER()**, podemos crear una lista de votantes que cumplan con un criterio específico. Es como separar a los cachorros de los perros adultos para un juego. 🐕‍🦺
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                        La sintaxis es: **=FILTER(rango_a_filtrar, condición1, [condición2, ...])**.
+                    </p>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué fórmula usarías para crear una nueva tabla solo con los votantes de la colonia "Condesa"?',
+                options: ['=FILTRAR(A:E, D:D="Condesa")', '=BUSCARX(A:E, D:D="Condesa")', '=BUSCARV(D:D="Condesa")'],
+                answer: '=FILTRAR(A:E, D:D="Condesa")'
+            },
+            {
+                phase: 'Fase 2: Estrategia de Manada 🐶',
+                title: 'Módulo 6: El Ladrido de Prioridad: Valores Booleanos',
+                emoji: '🚨',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¿Quién necesita más atención? 🚨</h3>
+                    <p class="text-gray-400 mb-4">
+                        Para la campaña, necesitamos identificar a los votantes indecisos de las colonias clave. Un valor booleano (**VERDADERO** o **FALSO**) nos ayuda a saber si un votante cumple con múltiples condiciones. Es la forma más rápida de decir "¡sí, este votante es importante!" o "¡no, este votante no es una prioridad ahora!". 🐾
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                        Las funciones clave son **=Y()** para que todas las condiciones sean VERDADERO, y **=O()** para que al menos una sea VERDADERO.
+                    </p>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué fórmula usarías para marcar con VERDADERO a los votantes que son "Indeciso" Y de la colonia "La Roma"?',
+                options: ['=Y(C2="Indeciso", D2="La Roma")', '=O(C2="Indeciso", D2="La Roma")', '=SI(C2="Indeciso")'],
+                answer: '=Y(C2="Indeciso", D2="La Roma")'
+            },
+            {
+                phase: 'Fase 2: Estrategia de Manada 🐶',
+                title: 'Módulo 7: Conectando Datos con Lógica: La Cacería Perfecta',
+                emoji: '🔗',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡La cacería perfecta! 🎯</h3>
+                    <p class="text-gray-400 mb-4">
+                        ¡El equipo de campaña descubrió un problema! Muchos votantes en La Roma han mencionado la palabra "tráfico" en sus comentarios. Puppy necesita saber exactamente quiénes son para poder hacerles llegar un mensaje especial sobre sus propuestas para mejorar la movilidad. ¡Tu misión es usar tus habilidades de sabueso para crear esa lista! 🐕‍🦺
+                    </p>
+                `,
+                type: 'dragAndDrop',
+                question: 'Arrastra las funciones para crear la fórmula que filtra a los votantes que mencionan "tráfico" en sus comentarios.',
+                dragItems: [
+                    { id: 'item-1', text: 'FILTER(' },
+                    { id: 'item-2', text: 'F:F' },
+                    { id: 'item-3', text: 'BUSCAR("tráfico", F:F))' }
+                ],
+                dropTargets: [
+                    { id: 'target-1', text: '=FILTER(' },
+                    { id: 'target-2', text: 'Rango a filtrar' },
+                    { id: 'target-3', text: 'Condición' }
+                ],
+                correctMapping: {
+                    'item-1': 'target-1',
+                    'item-2': 'target-2',
+                    'item-3': 'target-3'
                 }
-            }
-
-            sendChatButton.onclick = handleGeminiQuery;
-            chatInput.onkeydown = (e) => {
-                if (e.key === 'Enter') {
-                    handleGeminiQuery();
+            },
+            {
+                phase: 'Fase 3: Visualización de Terreno 🗺️',
+                title: 'Módulo 8: El Resumen de la Manada: Tablas Dinámicas',
+                emoji: '📝',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¿En qué colonia tiene más aliados Puppy? 📊</h3>
+                    <p class="text-gray-400 mb-4">
+                        El equipo de campaña necesita saber rápidamente en qué colonias tenemos más aliados para enfocar sus paseos. Contar manualmente sería un desastre. La solución es una **Tabla Dinámica**. Con ella, podemos resumir grandes cantidades de datos en una tabla fácil de leer para tomar decisiones rápidas. ¡Es como contar cuántos perros de cada raza hay en un parque! 🐾
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-amber-300 mb-2">Tabla Dinámica de Muestra:</h4>
+                        <p class="text-gray-400 mb-2 italic">Puedes recrear esto en Google Sheets usando los datos del curso.</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-400">
+                                <thead class="text-xs uppercase bg-gray-700 text-gray-300">
+                                    <tr>
+                                        <th scope="col" class="py-3 px-6">Colonia</th>
+                                        <th scope="col" class="py-3 px-6">Conteo de ID_Votante</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-gray-800 border-b border-gray-700">
+                                        <td class="py-4 px-6 font-medium text-white">La Roma</td>
+                                        <td class="py-4 px-6">5</td>
+                                    </tr>
+                                    <tr class="bg-gray-800 border-b border-gray-700">
+                                        <td class="py-4 px-6 font-medium text-white">Condesa</td>
+                                        <td class="py-4 px-6">4</td>
+                                    </tr>
+                                    <tr class="bg-gray-800">
+                                        <td class="py-4 px-6 font-medium text-white">Polanco</td>
+                                        <td class="py-4 px-6">3</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: 'Para crear una Tabla Dinámica en Sheets, ¿qué campo pondrías en "Filas" para contar votantes por colonia?',
+                options: ['Colonia', 'Nombre_Completo', 'Voto_Encuesta'],
+                answer: 'Colonia'
+            },
+            {
+                phase: 'Fase 3: Visualización de Terreno 🗺️',
+                title: 'Módulo 9: El Mapa de Votantes: Gráficos de Resumen',
+                emoji: '🗺️',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: El camino de Puppy a la victoria. 📈</h3>
+                    <p class="text-gray-400 mb-4">
+                        Gracias a tu Tabla Dinámica, Puppy sabe que "La Roma" y "Condesa" tienen muchos votantes. Para que el equipo lo entienda mejor, crea un gráfico de pastel. Así podrán visualizar rápidamente el porcentaje de aliados por colonia y planificar su campaña. ¡Un gráfico bien hecho vale más que mil ladridos! 🎨
+                    </p>
+                    <div class="mt-8 flex justify-center items-center h-64 bg-gray-800 rounded-lg">
+                        <div class="w-48 h-48 rounded-full shadow-lg" style="background: conic-gradient(red 0% 30%, blue 30% 60%, orange 60% 100%);"></div>
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: 'Una vez que tienes los datos resumidos en la Tabla Dinámica, ¿qué tipo de gráfico es ideal para mostrar la distribución de votantes por colonia?',
+                options: ['Gráfico de barras', 'Gráfico de pastel', 'Gráfico de líneas'],
+                answer: 'Gráfico de pastel'
+            },
+            {
+                phase: 'Fase 3: Visualización de Terreno 🗺️',
+                title: 'Módulo 10: Semáforo de Prioridad: Formato Condicional',
+                emoji: '🚦',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Colorea lo más importante! 🚥</h3>
+                    <p class="text-gray-400 mb-4">
+                        Ahora, Puppy necesita analizar la efectividad de sus visitas a las colonias. Vas a usar el **Formato Condicional** para que, en la columna "Voto_Encuesta", las celdas con "Sí" se pongan verdes, "No" se pongan rojas e "Indeciso" se pongan amarillas. Es como un semáforo de apoyo político.
+                    </p>
+                    <div class="mt-8 flex justify-center items-center">
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Formato+Condicional+de+Ejemplo" alt="Ejemplo de Formato Condicional en Google Sheets" class="rounded-lg shadow-lg">
+                    </div>
+                `,
+                type: 'dragAndDrop',
+                question: 'Arrastra los colores al tipo de voto correcto para el Formato Condicional.',
+                dragItems: [
+                    { id: 'item-1', text: 'Verde' },
+                    { id: 'item-2', text: 'Rojo' },
+                    { id: 'item-3', text: 'Amarillo' }
+                ],
+                dropTargets: [
+                    { id: 'target-1', text: '"Sí"' },
+                    { id: 'target-2', text: '"No"' },
+                    { id: 'target-3', text: '"Indeciso"' }
+                ],
+                correctMapping: {
+                    'item-1': 'target-1',
+                    'item-2': 'target-2',
+                    'item-3': 'target-3'
                 }
+            },
+            {
+                phase: 'Fase 4: El Perro Robot 🤖',
+                title: 'Módulo 11: La Pericia del Sabueso: Automatización',
+                emoji: '🤖',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Deja que el perro haga el trabajo! ⚙️</h3>
+                    <p class="text-gray-400 mb-4">
+                        Un sabueso inteligente no persigue la misma ardilla todos los días. La automatización, usando Google App Script, nos permite enseñar a las hojas de cálculo a hacer el trabajo repetitivo por nosotros. Podemos programar tareas como enviar correos, generar reportes o actualizar datos automáticamente. ¡Es como tener un perro robot que hace el trabajo por ti!
+                    </p>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué herramienta se utiliza para automatizar tareas en Google Sheets?',
+                options: ['Google Forms', 'Google App Script', 'Google Docs'],
+                answer: 'Google App Script'
+            },
+            {
+                phase: 'Fase 4: El Perro Robot 🤖',
+                title: 'Módulo 12: Escribiendo tu Primer Script con ayuda de IA 🧹',
+                emoji: '⌨️',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Una pata al código con IA! 🤖</h3>
+                    <p class="text-gray-400 mb-4">
+                        Puppy se da cuenta de que los nuevos datos de encuestas llegan con espacios extra y letras minúsculas en los nombres. Tu misión es crear un script que limpie la columna **Nombre_Completo**.
+                        <br>
+                        En lugar de darte el código fijo, te mostraremos cómo usar una IA para que genere el código por ti. ¡Así es como los analistas modernos trabajan! Ve a **'Extensiones' > 'Apps Script'** en tu Google Sheet.
+                    </p>
+                    <p class="text-gray-400 mb-4">
+                        Usa un prompt como este en una IA (como nuestro asistente o cualquier otra):
+                        <pre><code>"Necesito un script en Google Apps Script para una hoja de cálculo. El script debe limpiar los datos en la columna B, eliminando espacios al inicio y al final, y convirtiendo la primera letra de cada palabra a mayúscula. Debe procesar todas las filas con datos y sobrescribir los valores en su lugar."</code></pre>
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Recreación de la interfaz de Apps Script:</h4>
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <div class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                                <span class="font-mono">Code.gs</span>
+                            </div>
+                            <pre class="bg-gray-900 text-green-300 overflow-x-auto"><code class="language-javascript">// Código generado por IA...
+function limpiarNombres() {
+  var hoja = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var rango = hoja.getRange('B2:B' + hoja.getLastRow());
+  var valores = rango.getValues();
+
+  for (var i = 0; i < valores.length; i++) {
+    var nombreLimpio = valores[i][0].toString().trim();
+    var palabras = nombreLimpio.split(' ');
+    for (var j = 0; j < palabras.length; j++) {
+      if (palabras[j].length > 0) {
+        palabras[j] = palabras[j].charAt(0).toUpperCase() + palabras[j].slice(1).toLowerCase();
+      }
+    }
+    valores[i][0] = palabras.join(' ');
+  }
+
+  rango.setValues(valores);
+}</code></pre>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 mt-4 italic">
+                        ¿Necesitas ayuda con el prompt o no funciona el código? ¡Pregúntale a nuestro asistente de IA integrado! 🐕‍🦺
+                    </p>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué hace el método `.trim()` en un script de JavaScript?',
+                options: ['Convierte el texto a mayúsculas.', 'Elimina los espacios al inicio y final del texto.', 'Cambia el color de la celda.'],
+                answer: 'Elimina los espacios al inicio y final del texto.'
+            },
+            {
+                phase: 'Fase 4: El Perro Robot 🤖',
+                title: 'Módulo 13: La Campaña en Piloto Automático',
+                emoji: '⚙️',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Tareas automáticas! ⚙️</h3>
+                    <p class="text-gray-400 mb-4">
+                        Para que el equipo de Puppy no tenga que correr el script cada vez, vamos a crear un activador. Esto hará que el script se ejecute automáticamente cada vez que se añadan nuevos datos de encuesta.
+                        <br>
+                        En App Script, ve a **'Activadores' (Trigger)** y crea uno para que tu script 'limpiarNombres' se ejecute **"Al enviar el formulario"**. 🚀
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-purple-300 mb-2">Diagrama de Flujo del Activador:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Flujo+de+Activador" alt="Diagrama de flujo de un activador en Google Apps Script" class="rounded-lg shadow-lg">
+                    </div>
+                    <p class="text-gray-400 mt-4 italic">
+                        ¿Necesitas ayuda con algún paso o te perdiste? ¡Pregúntale a nuestro asistente de IA integrado! 🐕‍🦺
+                    </p>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué opción en Apps Script te permite programar la ejecución de un script?',
+                options: ['Run', 'Activadores', 'Debug'],
+                answer: 'Activadores'
+            },
+            {
+                phase: 'Fase 5: El Instinto de Liderazgo 🧠',
+                title: 'Módulo 14: La IA en el Análisis de Datos',
+                emoji: '🧠',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Aprende del instinto! 🧠</h3>
+                    <p class="text-gray-400 mb-4">
+                        La IA es el instinto de la manada. Nos ayuda a predecir el comportamiento de los votantes, segmentar audiencias y personalizar mensajes de campaña a una escala masiva. Con la IA, podemos ir más allá de los datos que tenemos y predecir lo que va a pasar, como un perro que sabe cuándo va a llover. ☔
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-cyan-300 mb-2">Ilustración de IA:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=IA+en+Análisis+de+Datos" alt="Ilustración de IA analizando datos de votantes" class="rounded-lg shadow-lg">
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: '¿Cuál es el beneficio clave de usar IA en una campaña?',
+                options: ['Permite predecir el comportamiento de los votantes y segmentar audiencias, ayudando a personalizar mensajes.', 'Genera gráficos automáticos en Google Sheets.', 'Crea correos electrónicos masivos.'],
+                answer: 'Permite predecir el comportamiento de los votantes y segmentar audiencias, ayudando a personalizar mensajes.'
+            },
+            {
+                phase: 'Fase 5: El Instinto de Liderazgo 🧠',
+                title: 'Módulo 15: Segmentación de Manadas',
+                emoji: '🧩',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Dividir para conquistar! 🧩</h3>
+                    <p class="text-gray-400 mb-4">
+                        La IA nos ayuda a segmentar a los votantes en grupos (manadas). Una manada puede ser de votantes jóvenes interesados en el medio ambiente, y otra de votantes mayores preocupados por la seguridad. Cada manada recibe un mensaje adaptado a sus intereses. 🗣️
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-cyan-300 mb-2">Diagrama de Segmentación:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Diagrama+de+Segmentación" alt="Diagrama de votantes segmentados por edad y ubicación" class="rounded-lg shadow-lg">
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué es la segmentación de votantes?',
+                options: ['Dividir a los votantes en grupos basados en características comunes.', 'Contar el número total de votantes en una base de datos.', 'Analizar el perfil de los candidatos rivales.'],
+                answer: 'Dividir a los votantes en grupos basados en características comunes.'
+            },
+            {
+                phase: 'Fase 5: El Instinto de Liderazgo 🧠',
+                title: 'Módulo 16: Prediciendo el Comportamiento',
+                emoji: '🔮',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Olfateando el futuro! 🔮</h3>
+                    <p class="text-gray-400 mb-4">
+                        Con modelos de IA, podemos predecir si un votante es "indeciso" o "fiel". Esta información nos permite enfocar nuestros recursos en aquellos que son más propensos a cambiar su voto. ¡Es como saber quién te va a dar una galleta antes de que la saquen! 🍪
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-cyan-300 mb-2">Modelo de Predicción:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Modelo+Predictivo+de+Votantes" alt="Gráfico de probabilidad de voto por votante" class="rounded-lg shadow-lg">
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué es un modelo de IA en una campaña?',
+                options: ['Una maqueta de la sede del partido.', 'Un programa que predice el comportamiento de los votantes.', 'Un tipo de gráfico en Looker Studio.'],
+                answer: 'Un programa que predice el comportamiento de los votantes.'
+            },
+            {
+                phase: 'Fase 6: La Victoria 🏆',
+                title: 'Módulo 17: Medición de Ladrido: Campos Calculados en Looker Studio',
+                emoji: '📏',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Más allá de lo obvio! 🎯</h3>
+                    <p class="text-gray-400 mb-4">
+                        El equipo de campaña quiere saber si la campaña está resonando con los jóvenes. En Looker Studio, vamos a usar un **Campo Calculado** para clasificar a los votantes por grupos de edad: "Joven" (menor de 30), "Adulto" (30-50) y "Senior" (mayor de 50). Así podemos medir el impacto de Puppy en cada grupo.
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-rose-300 mb-2">Recreación de la interfaz de Looker Studio:</h4>
+                        <div class="bg-gray-900 rounded-lg p-4">
+                            <h5 class="text-sm text-gray-400 mb-2">Pestaña de "Campos Calculados"</h5>
+                            <pre class="bg-gray-900 text-green-300 overflow-x-auto"><code>CASE WHEN Edad < 30 THEN "Joven"
+     WHEN Edad >= 30 AND Edad <= 50 THEN "Adulto"
+     ELSE "Senior"
+END</code></pre>
+                        </div>
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué función usarías para crear un campo calculado que clasifique la edad de los votantes en "Joven", "Adulto" o "Senior"?',
+                options: ['CASE WHEN Edad < 30 THEN "Joven"', 'SUM(Edad)', 'COUNT(Edad)'],
+                answer: 'CASE WHEN Edad < 30 THEN "Joven"'
+            },
+            {
+                phase: 'Fase 6: La Victoria 🏆',
+                title: 'Módulo 18: El Rastro del Éxito: Análisis Avanzado',
+                emoji: '📊',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Los datos cuentan la historia! 📈</h3>
+                    <p class="text-gray-400 mb-4">
+                        Al revisar tu dashboard, notas que los "Amigos de Gatos" de "La Roma" tienen muchos comentarios negativos sobre el tráfico. Con un campo calculado, podemos crear un "Índice de Resentimiento" para cada colonia. ¡Es una métrica clave para el equipo de campaña!
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-rose-300 mb-2">Recreación del Dashboard en Looker Studio:</h4>
+                        <div class="bg-gray-900 rounded-lg p-4 flex flex-col items-center">
+                            <div class="w-full text-center">
+                                <span class="text-xs text-gray-400 uppercase">Índice de Resentimiento</span>
+                                <p class="text-3xl font-bold text-red-500">80%</p>
+                                <span class="text-sm text-gray-500">La Roma - Amigos de Gatos</span>
+                            </div>
+                            <div class="mt-4 w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500">
+                                Gráfico de Barras de Resentimiento
+                            </div>
+                        </div>
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: 'Para crear un "Índice de Resentimiento" que cuente los comentarios negativos por colonia, ¿qué tipo de campo calculado usarías?',
+                options: ['Uno que cuente los comentarios positivos.', 'Uno que sume la edad de los votantes.', 'Uno que cuente las menciones de "tráfico" o "problema".'],
+                answer: 'Uno que cuente las menciones de "tráfico" o "problema".'
+            },
+            {
+                phase: 'Fase 6: La Victoria 🏆',
+                title: 'Módulo 19: El Cierre de Campaña: Decisiones Basadas en Datos',
+                emoji: '🎉',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡El último ladrido! 🐾</h3>
+                    <p class="text-gray-400 mb-4">
+                        Gracias a tu trabajo, Puppy Chiquito Político ha optimizado sus recursos. Al analizar tus dashboards, notaste que los votantes jóvenes de "La Roma" son clave. Usando los datos de "Comentarios_Encuesta", creaste mensajes específicos sobre la seguridad y el tráfico. ¡La campaña está en su punto más alto! 🥳
+                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-rose-300 mb-2">Estrategia Final de Puppy:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Estrategia+Basada+en+Datos" alt="Diagrama de flujo de la estrategia de campaña" class="rounded-lg shadow-lg">
+                    </div>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué habilidad de las aprendidas fue crucial para el éxito del evento en La Roma?',
+                options: ['Identificar votantes indecisos y sus preocupaciones a través de los datos.', 'Distribuir volantes en toda la ciudad.', 'Contratar a un entrenador canino famoso.'],
+                answer: 'Identificar votantes indecisos y sus preocupaciones a través de los datos.'
+            },
+            {
+                phase: 'Fase 7: El Legado 🏅',
+                title: 'Módulo 20: El día de la elección',
+                emoji: '🗳️',
+                content: `
+                    <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Misión: ¡Aullidos de victoria! 🏆</h3>
+                    <p class="text-gray-400 mb-4">
+                        ¡Lo lograste! El conteo de votos ha terminado y Puppy Chiquito Político, gracias a tu ayuda, ha sido electo diputado de la Ciudad de México. Tu trabajo como analista de datos fue crucial para esta histórica victoria. Ahora, solo queda celebrar. 🥳🎉
+                    </p>
+                `,
+                type: 'multipleChoice',
+                question: '¿Qué aprendiste sobre el análisis de datos para campañas políticas?',
+                options: ['Es una herramienta para contar votos.', 'Es una herramienta estratégica para la toma de decisiones.', 'Solo sirve para hacer gráficos.'],
+                answer: 'Es una herramienta estratégica para la toma de decisiones.'
+            },
+            {
+                phase: 'Fase 7: El Legado 🏅',
+                title: 'Módulo 21: ¡Felicidades! Tu Certificado',
+                emoji: '🎓',
+                content: `
+                    <h2 class="text-3xl font-bold neon-text text-cyan-400 mb-4">¡Guau! ¡Lo Lograste! 🐾🎓</h2>
+                    <p class="text-xl mb-6">
+                        ¡Felicidades, <span id="final-dog-name" class="font-bold text-pink-400"></span>! Has completado el curso y te has ganado el prestigioso título de Sabueso de Datos Políticos. ¡Puppy Chiquito Político está orgulloso!
+                    </p>
+                    <div class="mt-8">
+                        <h3 class="text-xl font-bold text-cyan-300 mb-4">Tu Certificado de Logro</h3>
+                        <canvas id="certificate-canvas" class="w-full h-auto bg-gray-800 rounded-lg neon-border"></canvas>
+                        <p class="mt-4 text-gray-500 italic">Haz una captura de pantalla para guardar tu certificado.</p>
+                        <p class="mt-8 text-lg font-bold text-fuchsia-400 text-center">
+                            ¡La victoria es tuya! 🎉 Tu dedicación y tu olfato para los datos hicieron la diferencia. Recuerda que con las herramientas adecuadas y un poco de instinto, puedes cambiar el mundo. ¡El futuro es brillante para ti y para el Partido PUP! 🐕
+                        </p>
+                    </div>
+                `,
+                type: 'certificate',
+                question: null,
+                answer: null
+            }
+        ];
+
+        // Referencias a elementos del DOM
+        const introScreen = document.getElementById('intro-screen');
+        const courseScreen = document.getElementById('course-screen');
+        const startForm = document.getElementById('start-form');
+        const sidebarModules = document.getElementById('sidebar-modules');
+        const courseTitleEl = document.getElementById('course-title');
+        const moduleContainer = document.getElementById('module-container');
+        const nextModuleButton = document.getElementById('next-module-button');
+        const finalDogNameEl = document.getElementById('final-dog-name');
+        const aiAssistantButton = document.getElementById('ai-assistant-button');
+        const chatModal = document.getElementById('chat-modal');
+        const closeChatButton = document.getElementById('close-chat-button');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendChatButton = document.getElementById('send-chat-button');
+        const certificateCanvas = document.getElementById('certificate-canvas');
+
+        // Función para mostrar la pantalla
+        function showScreen(screen) {
+            introScreen.style.display = 'none';
+            courseScreen.style.display = 'none';
+            screen.style.display = 'flex';
+        }
+
+        // Cargar progreso
+        function loadProgress() {
+            const savedState = JSON.parse(localStorage.getItem('courseState'));
+            if (savedState) {
+                currentModuleIndex = savedState.currentModuleIndex;
+                userName = savedState.userName;
+                fullName = savedState.fullName;
+                completedModules = savedState.completedModules || [];
+                score = savedState.score || 0;
+            }
+        }
+
+        // Guardar progreso
+        function saveProgress() {
+            const state = {
+                currentModuleIndex,
+                userName,
+                fullName,
+                completedModules,
+                score
             };
-        } catch (error) {
-            console.error("Error al cargar la biblioteca de Gemini:", error);
-            alert("No se pudo iniciar el Asistente de IA. Por favor, revisa la consola de tu navegador.");
+            localStorage.setItem('courseState', JSON.stringify(state));
         }
-    }
 
-    function closeChat() {
-        chatModal.classList.add('hidden');
-        chatInput.value = '';
-    }
+        // Renderizar la barra lateral
+        function renderSidebar() {
+            sidebarModules.innerHTML = '';
+            modules.forEach((mod, index) => {
+                const isCompleted = completedModules.includes(index) || index === 0;
+                const isActive = index === currentModuleIndex;
 
-    function startCourse() {
-        const storedUsername = localStorage.getItem('puppy_course_username');
-        if (storedUsername) {
-            username = storedUsername;
-            splashScreen.classList.add('hidden');
-            mainCourse.classList.remove('hidden');
-            buildSidebar();
-            if (loadProgress()) {
-                const allModules = Object.values(COURSE_CONTENT).flat();
-                if (currentModuleIndex >= allModules.length) {
-                    showConclusion();
-                } else {
-                    renderModule(currentModuleIndex);
+                const item = document.createElement('div');
+                item.className = `sidebar-item cursor-pointer ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : 'opacity-50'}`;
+                item.innerHTML = `<span class="text-xl mr-2">${mod.emoji}</span> ${mod.title}`;
+                
+                if (completedModules.includes(index) || index === 0) {
+                    item.addEventListener('click', () => {
+                        currentModuleIndex = index;
+                        renderModule();
+                    });
+                }
+                
+                sidebarModules.appendChild(item);
+            });
+        }
+
+        // Renderizar módulo
+        function renderModule() {
+            saveProgress();
+            renderSidebar();
+
+            const module = modules[currentModuleIndex];
+            courseTitleEl.textContent = module.title;
+            nextModuleButton.style.display = 'none';
+
+            if (module.type === 'certificate') {
+                moduleContainer.innerHTML = module.content;
+                const finalDogNameEl = document.getElementById('final-dog-name');
+                if (finalDogNameEl) finalDogNameEl.textContent = userName;
+                isFinalModule = true;
+                drawCertificate(fullName, Math.floor((score / (modules.length - 1)) * 100));
+                return;
+            } else {
+                isFinalModule = false;
+            }
+
+            moduleContainer.innerHTML = `
+                <div class="p-8 rounded-xl module-card">
+                    ${module.content}
+                </div>
+                <div id="question-area" class="mt-8 p-6 rounded-xl module-card">
+                    <h4 class="text-xl font-bold text-cyan-300 mb-4">${module.question}</h4>
+                    <div id="question-content"></div>
+                    <button id="check-answer-button" class="mt-6 py-3 px-6 text-lg font-bold rounded-lg text-white transition-all duration-300 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600">
+                        Comprobar Respuesta
+                    </button>
+                    <div id="feedback" class="mt-4 font-bold"></div>
+                </div>
+            `;
+
+            const questionContent = document.getElementById('question-content');
+            const checkAnswerButton = document.getElementById('check-answer-button');
+            const feedbackEl = document.getElementById('feedback');
+
+            if (module.type === 'multipleChoice') {
+                module.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.className = 'w-full text-left p-3 rounded-lg mb-2 bg-gray-700 hover:bg-gray-600 transition-colors duration-200';
+                    button.addEventListener('click', () => {
+                        const allButtons = questionContent.querySelectorAll('button');
+                        allButtons.forEach(btn => btn.classList.remove('border-2', 'border-cyan-400'));
+                        button.classList.add('border-2', 'border-cyan-400');
+                        checkAnswerButton.disabled = false;
+                        checkAnswerButton.dataset.answer = option;
+                    });
+                    questionContent.appendChild(button);
+                });
+                checkAnswerButton.dataset.correctAnswer = module.answer;
+            } else if (module.type === 'shortAnswer') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = 'Escribe tu respuesta aquí...';
+                input.className = 'w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-cyan-500';
+                questionContent.appendChild(input);
+            } else if (module.type === 'dragAndDrop') {
+                questionContent.innerHTML = `
+                    <div class="flex flex-col md:flex-row justify-around">
+                        <div id="drag-items" class="flex flex-col items-center space-y-4 mb-8 md:mb-0">
+                            ${module.dragItems.map(item => `
+                                <div id="${item.id}" draggable="true" class="draggable p-4 bg-purple-600 text-white rounded-lg cursor-grab">
+                                    ${item.text}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div id="drop-targets" class="flex flex-col items-center space-y-4">
+                            ${module.dropTargets.map(target => `
+                                <div id="${target.id}" class="dropzone p-4 bg-gray-800 text-gray-400 rounded-lg w-64">
+                                    ${target.text}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                setupDragAndDrop(module.correctMapping);
+            }
+
+            checkAnswerButton.onclick = () => checkAnswer();
+            checkAnswerButton.style.display = 'block';
+        }
+
+        // Configurar drag and drop
+        function setupDragAndDrop(correctMapping) {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropzones = document.querySelectorAll('.dropzone');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                });
+            });
+
+            dropzones.forEach(dropzone => {
+                dropzone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.add('hovered');
+                });
+                dropzone.addEventListener('dragleave', () => {
+                    dropzone.classList.remove('hovered');
+                });
+                dropzone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    dropzone.classList.remove('hovered');
+                    const draggableId = e.dataTransfer.getData('text/plain');
+                    const draggableEl = document.getElementById(draggableId);
+                    if (draggableEl) {
+                        dropzone.appendChild(draggableEl);
+                    }
+                });
+            });
+        }
+
+        // Comprobar la respuesta
+        function checkAnswer() {
+            const module = modules[currentModuleIndex];
+            let isCorrect = false;
+            let userAnswer;
+            const feedbackEl = document.getElementById('feedback');
+
+            if (module.type === 'multipleChoice') {
+                userAnswer = document.querySelector('#question-content button.border-cyan-400')?.textContent;
+                if (userAnswer === module.answer) {
+                    isCorrect = true;
+                }
+            } else if (module.type === 'shortAnswer') {
+                userAnswer = document.getElementById('question-content').querySelector('input').value.trim();
+                const cleanUserAnswer = userAnswer.toLowerCase().replace(/[.,!?¡¿]/g, '');
+                const cleanCorrectAnswer = module.answer.toLowerCase().replace(/[.,!?¡¿]/g, '');
+                if (cleanUserAnswer.includes(cleanCorrectAnswer)) {
+                    isCorrect = true;
+                }
+            } else if (module.type === 'dragAndDrop') {
+                isCorrect = true;
+                for (const dragId in module.correctMapping) {
+                    const dropzoneId = module.correctMapping[dragId];
+                    const dropzoneEl = document.getElementById(dropzoneId);
+                    if (!dropzoneEl || dropzoneEl.firstElementChild?.id !== dragId) {
+                        isCorrect = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isCorrect) {
+                feedbackEl.textContent = '¡Correcto! ¡Guau-maravilloso! 🐾';
+                feedbackEl.className = 'mt-4 font-bold text-green-400';
+                nextModuleButton.style.display = 'block';
+                if (!completedModules.includes(currentModuleIndex)) {
+                    score += 1;
+                    completedModules.push(currentModuleIndex);
                 }
             } else {
-                currentModuleIndex = 0;
-                renderModule(currentModuleIndex);
+                feedbackEl.textContent = '¡Incorrecto! No te rindas, intenta de nuevo. ¡Los grandes sabuesos también se equivocan! 🧐';
+                feedbackEl.className = 'mt-4 font-bold text-red-400';
             }
-        } else {
-            usernameInput.value = "";
-            usernameInput.focus();
-            splashScreen.classList.remove('hidden');
-            mainCourse.classList.add('hidden');
         }
-    }
+        
+        // Dibujar certificado
+        function drawCertificate(name, score) {
+            const ctx = certificateCanvas.getContext('2d');
+            const img = new Image();
+            img.onload = () => {
+                certificateCanvas.width = img.width;
+                certificateCanvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
 
-    startButton.addEventListener('click', () => {
-        username = usernameInput.value.trim();
-        if (username) {
-            localStorage.setItem('puppy_course_username', username);
-            splashScreen.classList.add('hidden');
-            mainCourse.classList.remove('hidden');
-            buildSidebar();
-            renderModule(currentModuleIndex);
-        } else {
-            alert("¡Por favor, ingresa tu nombre para empezar!");
+                ctx.font = 'bold 60px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#10b981';
+                ctx.shadowColor = '#06b6d4';
+                ctx.shadowBlur = 10;
+                ctx.fillText('¡CERTIFICADO DE SABUESO!', certificateCanvas.width / 2, 200);
+
+                ctx.font = '40px Inter';
+                ctx.fillStyle = '#f43f5e';
+                ctx.fillText('Este certificado es otorgado a:', certificateCanvas.width / 2, 300);
+
+                ctx.font = 'bold 80px Inter';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(name, certificateCanvas.width / 2, 400);
+
+                ctx.font = '40px Inter';
+                ctx.fillStyle = '#d1d5db';
+                ctx.fillText('Por haber completado el curso de', certificateCanvas.width / 2, 500);
+
+                ctx.font = 'bold 50px Inter';
+                ctx.fillStyle = '#8b5cf6';
+                ctx.fillText('Análisis de Datos Políticos', certificateCanvas.width / 2, 560);
+
+                ctx.font = '40px Inter';
+                ctx.fillStyle = '#d1d5db';
+                ctx.fillText(`Con una calificación de ${score}%`, certificateCanvas.width / 2, 650);
+            };
+            img.src = 'https://placehold.co/1200x800/1e293b/d1d5db?text=Certificado+de+Análisis+de+Datos';
         }
-    });
 
-    submitButton.addEventListener('click', handleAnswer);
-    shortAnswerInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            handleAnswer();
+        // Lógica de inicio
+        startForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            userName = document.getElementById('dog-name').value;
+            fullName = document.getElementById('full-name').value;
+            saveProgress();
+            showScreen(courseScreen);
+            renderModule();
+        });
+
+        nextModuleButton.addEventListener('click', () => {
+            currentModuleIndex++;
+            renderModule();
+        });
+
+        // Lógica del chat
+        aiAssistantButton.addEventListener('click', () => {
+            chatModal.style.display = 'flex';
+        });
+
+        closeChatButton.addEventListener('click', () => {
+            chatModal.style.display = 'none';
+        });
+
+        sendChatButton.addEventListener('click', async () => {
+            const userMessage = chatInput.value;
+            if (!userMessage.trim()) return;
+
+            // Mostrar el mensaje del usuario
+            addMessageToChat('user', userMessage);
+            chatInput.value = '';
+
+            // Mostrar "escribiendo..."
+            addMessageToChat('bot', '...', true);
+
+            try {
+                const payload = {
+                    contents: [{ parts: [{ text: `Actúa como un asistente de campaña perruno y responde con un tono divertido y con analogías de perros. Pregunta del usuario: ${userMessage}` }] }],
+                    tools: [{ "google_search": {} }],
+                    systemInstruction: {
+                        parts: [{ text: "Eres un asistente de IA perruno, divertido y experto en análisis de datos para campañas políticas. Mantén el tono temático." }]
+                    },
+                };
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                const botResponse = result.candidates?.[0]?.content?.parts?.[0]?.text || 'Guau, algo salió mal. Inténtalo de nuevo.';
+
+                // Eliminar el mensaje de "escribiendo..." y mostrar la respuesta
+                chatMessages.removeChild(chatMessages.lastElementChild);
+                addMessageToChat('bot', botResponse);
+            } catch (error) {
+                console.error('Error with Gemini API:', error);
+                chatMessages.removeChild(chatMessages.lastElementChild);
+                addMessageToChat('bot', '¡Guau! No puedo encontrar la respuesta en este momento. La conexión con la manada se perdió. 📡');
+            }
+        });
+
+        function addMessageToChat(sender, message, isTyping = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `p-3 rounded-lg max-w-[80%] ${sender === 'user' ? 'bg-blue-600 self-end ml-auto' : 'bg-gray-700 self-start mr-auto'}`;
+            messageDiv.textContent = message;
+            if (isTyping) {
+                messageDiv.classList.add('italic');
+            }
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-    });
 
-    chatButton.addEventListener('click', initGeminiChat);
-    closeChatButton.addEventListener('click', closeChat);
-    restartButton.addEventListener('click', () => {
-        localStorage.clear();
-        window.location.reload();
-    });
+        // Inicio de la aplicación
+        window.onload = () => {
+            loadProgress();
+            if (userName && fullName) {
+                showScreen(courseScreen);
+                renderModule();
+            } else {
+                showScreen(introScreen);
+            }
+        };
 
-    document.addEventListener('DOMContentLoaded', startCourse);
-</script>
+    </script>
 </body>
 </html>
