@@ -67,11 +67,13 @@
             justify-content: center;
             text-align: center;
             transition: all 0.2s;
+            position: relative;
         }
         .dropzone.hovered {
             background-color: rgba(100, 116, 139, 0.2);
             border-color: #3b82f6;
             border-style: solid;
+            box-shadow: 0 0 10px #3b82f6;
         }
         /* Sidebar Styling */
         #sidebar {
@@ -142,6 +144,68 @@
         .animate-bounce {
             animation: bounce-animation 2s infinite ease-in-out;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        .drag-correct {
+            border-color: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+        .drag-incorrect {
+            border-color: #f43f5e;
+            box-shadow: 0 0 10px #f43f5e;
+        }
+        /* New Styles for Pie Chart Animation */
+        .pie-chart-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #f43f5e 0% 30%,
+                #8b5cf6 30% 60%,
+                #06b6d4 60% 100%
+            );
+            transition: all 1s ease-in-out;
+            animation: fillPie 2s ease-in-out;
+        }
+        @keyframes fillPie {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .pie-slice {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
+        }
+        /* New Styles for Bar Chart Animation */
+        .bar-chart-container {
+            width: 100%;
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding-top: 10px;
+            border-bottom: 2px solid #94a3b8;
+        }
+        .bar {
+            width: 30px;
+            background-color: #06b6d4;
+            transition: height 1s ease-in-out;
+            animation: fillBar 1.5s ease-in-out;
+        }
+        @keyframes fillBar {
+            from { height: 0; }
+            to { height: var(--bar-height); }
+        }
     </style>
 </head>
 <body class="bg-gray-950 text-gray-300">
@@ -182,13 +246,21 @@
         
         <!-- Contenido principal del curso -->
         <main id="course-content-container" class="flex-grow">
+            <!-- Barra de Progreso -->
+            <div id="progress-bar-container" class="mb-6 p-4 module-card rounded-xl">
+                <div class="text-sm font-bold text-cyan-300 flex justify-between mb-2">
+                    <span>Progreso del Curso:</span>
+                    <span id="progress-percentage" class="neon-text">0%</span>
+                </div>
+                <div class="w-full bg-gray-700 rounded-full h-2">
+                    <div id="progress-indicator" class="h-2 rounded-full transition-all duration-700 ease-in-out bg-gradient-to-r from-green-400 to-teal-500" style="width: 0%"></div>
+                </div>
+            </div>
+            
             <h2 id="course-title" class="text-3xl font-bold neon-text text-cyan-400 mb-4 text-center"></h2>
             <div id="module-container" class="min-h-[500px]">
                 <!-- Contenido del módulo y preguntas se renderizarán aquí -->
             </div>
-            <button id="next-module-button" class="w-full py-3 mt-8 text-lg font-bold rounded-lg text-white transition-all duration-300 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 hidden">
-                Siguiente Módulo
-            </button>
         </main>
     </div>
 
@@ -239,8 +311,14 @@
                 content: `
                     <h3 class="text-2xl font-bold text-fuchsia-400 mb-4">Conoce a Puppy Chiquito Político y el Partido PUP</h3>
                     <p class="text-gray-400 mb-4">
-                        ¡Guau! ¡Bienvenido, futuro sabueso de datos! Puppy Chiquito Político, un adorable cachorro mestizo de la CDMX, tiene un gran sueño: ser diputado para mejorar la vida de todos. . Su partido se llama **PUP: Patitas Unidas para el Pueblo**. 🐾 Juntos, vamos a usar el poder de los datos para ganar la elección. ¡Tu primera misión es aprender a olfatear los datos correctos!
+                        ¡Guau! ¡Bienvenido, futuro sabueso de datos! Puppy Chiquito Político, un adorable cachorro mestizo de la CDMX, tiene un gran sueño: ser diputado para mejorar la vida de todos. Su partido se llama **PUP: Patitas Unidas para el Pueblo**. 🐾 Juntos, vamos a usar el poder de los datos para ganar la elección. ¡Tu primera misión es aprender a olfatear los datos correctos!
                     </p>
+                    <div class="mt-8 flex justify-center">
+                        <!-- IMAGEN DE PUPPY CHIQUITO POLÍTICO: ADVERTENCIA: Esta URL de Drive a menudo requiere que la imagen sea pública para que se muestre correctamente. Si no carga, deberás generar un enlace de uso compartido directo. -->
+                        <img src="https://lh3.googleusercontent.com/pw/AP1GczN22RO_Ty-koYBMNNea5HlPCfKK0gXqil9l8qEMrtel67_CusU39vQte6vajns5SoO3pH3F6Zd5dRlZYxnt-8b8vuQBfiIjryCNRqoRuiYHf54Amxk07Jm3efL03dO-b8dV-tVX9B0Y61eueU9sJUzzLg=w500-h500-s-no-gm?authuser=0" 
+                             alt="Puppy Chiquito Político con un traje pequeño" 
+                             class="w-64 h-auto rounded-lg shadow-xl neon-border transition-all duration-300 hover:scale-[1.02]">
+                    </div>
                 `,
                 type: 'multipleChoice',
                 question: '¿Cuál es el nombre del partido de Puppy Chiquito Político?',
@@ -256,9 +334,13 @@
                     <p class="text-gray-400 mb-4">
                         ¡La campaña ha empezado! El primer paso es organizar la información de los votantes. La herramienta principal de nuestro equipo es Google Sheets. Piensa en ella como un gran parque lleno de datos, donde cada hoja es un área cercada y cada celda una huella. ¡Es el lugar perfecto para organizar toda la información de nuestros votantes! 🐾
                     </p>
-                    <p class="text-gray-400 mb-4">
-                        Para esta actividad, dirígete al tazón de recursos y haz una copia para tu propio uso.
-                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-amber-300 mb-2">Recreación de Google Sheets:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Interfaz+de+Google+Sheets" alt="Interfaz de Google Sheets" class="w-full h-auto rounded-lg shadow-lg mb-4">
+                        <p class="text-gray-400 italic">
+                            Puedes ver un ejemplo de la hoja de cálculo. Para esta actividad, dirígete al tazón de recursos y haz una copia para tu propio uso.
+                        </p>
+                    </div>
                     <div class="flex justify-center mt-6">
                         <a href="https://docs.google.com/spreadsheets/d/12jt1jKI8Z7yDKU1LZnEX0gM1eyUqK-Y7fbeswfUNoMA/edit?usp=sharing" target="_blank" class="py-3 px-6 text-lg font-bold rounded-lg text-white transition-all duration-300 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600">
                             Ir al Tazón de Recursos 🐾
@@ -279,9 +361,11 @@
                     <p class="text-gray-400 mb-4">
                         Al recolectar la información, algunas huellas (los datos) están llenas de barro: nombres mal escritos, edades que no tienen sentido, campos vacíos. Esto es lo que llamamos "datos sucios". Nuestro trabajo como sabuesos es limpiar este barro para que el camino sea claro. 🧼
                     </p>
-                    <p class="text-gray-400">
-                        Mira los datos que tenemos. La limpieza es el primer paso.
-                    </p>
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
+                        <h4 class="text-lg font-bold text-amber-300 mb-2">Ejemplo Visual de Datos Sucios vs. Limpios:</h4>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Datos+limpios+vs.+Datos+sucios" alt="Datos limpios versus datos sucios" class="w-full h-auto rounded-lg shadow-lg mb-4">
+                        <p class="text-gray-400 italic">Mira los datos que tenemos. La limpieza es el primer paso.</p>
+                    </div>
                 `,
                 type: 'dragAndDrop',
                 question: '¡Guau! Arrastra la tarjeta que representa un "dato sucio" y "dato limpio" basado en el tipo de votante de nuestra tabla.',
@@ -433,7 +517,7 @@
                         Gracias a tu Tabla Dinámica, Puppy sabe que "La Roma" y "Condesa" tienen muchos votantes. Para que el equipo lo entienda mejor, crea un gráfico de pastel. Así podrán visualizar rápidamente el porcentaje de aliados por colonia y planificar su campaña. ¡Un gráfico bien hecho vale más que mil ladridos! 🎨
                     </p>
                     <div class="mt-8 flex justify-center items-center h-64 bg-gray-800 rounded-lg">
-                        <div class="w-48 h-48 rounded-full shadow-lg" style="background: conic-gradient(red 0% 30%, blue 30% 60%, orange 60% 100%);"></div>
+                        <div class="pie-chart-container"></div>
                     </div>
                 `,
                 type: 'multipleChoice',
@@ -504,30 +588,7 @@
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-purple-300 mb-2">Recreación de la interfaz de Apps Script:</h4>
-                        <div class="bg-gray-900 rounded-lg p-4">
-                            <div class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
-                                <span class="font-mono">Code.gs</span>
-                            </div>
-                            <pre class="bg-gray-900 text-green-300 overflow-x-auto"><code class="language-javascript">// Código generado por IA...
-function limpiarNombres() {
-  var hoja = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var rango = hoja.getRange('B2:B' + hoja.getLastRow());
-  var valores = rango.getValues();
-
-  for (var i = 0; i < valores.length; i++) {
-    var nombreLimpio = valores[i][0].toString().trim();
-    var palabras = nombreLimpio.split(' ');
-    for (var j = 0; j < palabras.length; j++) {
-      if (palabras[j].length > 0) {
-        palabras[j] = palabras[j].charAt(0).toUpperCase() + palabras[j].slice(1).toLowerCase();
-      }
-    }
-    valores[i][0] = palabras.join(' ');
-  }
-
-  rango.setValues(valores);
-}</code></pre>
-                        </div>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Interfaz+de+Apps+Script" alt="Interfaz de Apps Script" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                     <p class="text-gray-400 mt-4 italic">
                         ¿Necesitas ayuda con el prompt o no funciona el código? ¡Pregúntale a nuestro asistente de IA integrado! 🐕‍🦺
@@ -551,7 +612,7 @@ function limpiarNombres() {
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-purple-300 mb-2">Diagrama de Flujo del Activador:</h4>
-                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Flujo+de+Activador" alt="Diagrama de flujo de un activador en Google Apps Script" class="rounded-lg shadow-lg">
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Diagrama+de+flujo+de+automatización" alt="Diagrama de flujo de automatización" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                     <p class="text-gray-400 mt-4 italic">
                         ¿Necesitas ayuda con algún paso o te perdiste? ¡Pregúntale a nuestro asistente de IA integrado! 🐕‍🦺
@@ -573,7 +634,7 @@ function limpiarNombres() {
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-cyan-300 mb-2">Ilustración de IA:</h4>
-                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=IA+en+Análisis+de+Datos" alt="Ilustración de IA analizando datos de votantes" class="rounded-lg shadow-lg">
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Inteligencia+artificial+analizando+datos" alt="Inteligencia artificial analizando datos" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                 `,
                 type: 'multipleChoice',
@@ -592,7 +653,7 @@ function limpiarNombres() {
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-cyan-300 mb-2">Diagrama de Segmentación:</h4>
-                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Diagrama+de+Segmentación" alt="Diagrama de votantes segmentados por edad y ubicación" class="rounded-lg shadow-lg">
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Una+población+segmentada+en+grupos" alt="Una población segmentada en grupos" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                 `,
                 type: 'multipleChoice',
@@ -611,7 +672,7 @@ function limpiarNombres() {
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-cyan-300 mb-2">Modelo de Predicción:</h4>
-                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Modelo+Predictivo+de+Votantes" alt="Gráfico de probabilidad de voto por votante" class="rounded-lg shadow-lg">
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Gráfico+de+modelo+predictivo" alt="Gráfico de modelo predictivo" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                 `,
                 type: 'multipleChoice',
@@ -655,16 +716,7 @@ END</code></pre>
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-rose-300 mb-2">Recreación del Dashboard en Looker Studio:</h4>
-                        <div class="bg-gray-900 rounded-lg p-4 flex flex-col items-center">
-                            <div class="w-full text-center">
-                                <span class="text-xs text-gray-400 uppercase">Índice de Resentimiento</span>
-                                <p class="text-3xl font-bold text-red-500">80%</p>
-                                <span class="text-sm text-gray-500">La Roma - Amigos de Gatos</span>
-                            </div>
-                            <div class="mt-4 w-full h-48 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500">
-                                Gráfico de Barras de Resentimiento
-                            </div>
-                        </div>
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=un+panel+de+control+final" alt="un panel de control final" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                 `,
                 type: 'multipleChoice',
@@ -683,7 +735,7 @@ END</code></pre>
                     </p>
                     <div class="mt-8 p-4 bg-gray-800 rounded-lg shadow-inner">
                         <h4 class="text-lg font-bold text-rose-300 mb-2">Estrategia Final de Puppy:</h4>
-                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Estrategia+Basada+en+Datos" alt="Diagrama de flujo de la estrategia de campaña" class="rounded-lg shadow-lg">
+                        <img src="https://placehold.co/600x200/292524/e7e5e4?text=Estrategia+Basada+en+Datos" alt="Estrategia Basada en Datos" class="w-full h-auto rounded-lg shadow-lg mb-4">
                     </div>
                 `,
                 type: 'multipleChoice',
@@ -715,7 +767,7 @@ END</code></pre>
                     <p class="text-xl mb-6">
                         ¡Felicidades, <span id="final-dog-name" class="font-bold text-pink-400"></span>! Has completado el curso y te has ganado el prestigioso título de Sabueso de Datos Políticos. ¡Puppy Chiquito Político está orgulloso!
                     </p>
-                    <div class="mt-8">
+                    <div class="mt-8 fade-in">
                         <h3 class="text-xl font-bold text-cyan-300 mb-4">Tu Certificado de Logro</h3>
                         <canvas id="certificate-canvas" class="w-full h-auto bg-gray-800 rounded-lg neon-border"></canvas>
                         <p class="mt-4 text-gray-500 italic">Haz una captura de pantalla para guardar tu certificado.</p>
@@ -737,7 +789,6 @@ END</code></pre>
         const sidebarModules = document.getElementById('sidebar-modules');
         const courseTitleEl = document.getElementById('course-title');
         const moduleContainer = document.getElementById('module-container');
-        const nextModuleButton = document.getElementById('next-module-button');
         const finalDogNameEl = document.getElementById('final-dog-name');
         const aiAssistantButton = document.getElementById('ai-assistant-button');
         const chatModal = document.getElementById('chat-modal');
@@ -778,6 +829,19 @@ END</code></pre>
             localStorage.setItem('courseState', JSON.stringify(state));
         }
 
+        // Actualizar barra de progreso
+        function updateProgressBar() {
+            const totalModules = modules.length - 1; // Excluye módulo de certificado (20 módulos de avance)
+            const completedCount = completedModules.filter(index => index < totalModules).length;
+            const percent = Math.floor((completedCount / totalModules) * 100);
+            
+            const progressIndicator = document.getElementById('progress-indicator');
+            const progressPercentage = document.getElementById('progress-percentage');
+            
+            if (progressIndicator) progressIndicator.style.width = `${percent}%`;
+            if (progressPercentage) progressPercentage.textContent = `${percent}%`;
+        }
+
         // Renderizar la barra lateral
         function renderSidebar() {
             sidebarModules.innerHTML = '';
@@ -804,10 +868,10 @@ END</code></pre>
         function renderModule() {
             saveProgress();
             renderSidebar();
+            updateProgressBar();
 
             const module = modules[currentModuleIndex];
             courseTitleEl.textContent = module.title;
-            nextModuleButton.style.display = 'none';
 
             if (module.type === 'certificate') {
                 moduleContainer.innerHTML = module.content;
@@ -860,18 +924,20 @@ END</code></pre>
                 input.className = 'w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-cyan-500';
                 questionContent.appendChild(input);
             } else if (module.type === 'dragAndDrop') {
+                // Shuffle drag items for better interactivity
+                const shuffledItems = shuffleArray([...module.dragItems]);
                 questionContent.innerHTML = `
                     <div class="flex flex-col md:flex-row justify-around">
                         <div id="drag-items" class="flex flex-col items-center space-y-4 mb-8 md:mb-0">
-                            ${module.dragItems.map(item => `
-                                <div id="${item.id}" draggable="true" class="draggable p-4 bg-purple-600 text-white rounded-lg cursor-grab">
+                            ${shuffledItems.map(item => `
+                                <div id="${item.id}" draggable="true" class="draggable w-56 h-12 flex items-center justify-center p-4 bg-purple-600 text-white rounded-lg cursor-grab">
                                     ${item.text}
                                 </div>
                             `).join('')}
                         </div>
                         <div id="drop-targets" class="flex flex-col items-center space-y-4">
                             ${module.dropTargets.map(target => `
-                                <div id="${target.id}" class="dropzone p-4 bg-gray-800 text-gray-400 rounded-lg w-64">
+                                <div id="${target.id}" class="dropzone p-4 bg-gray-800 text-gray-400 rounded-lg w-56 h-12">
                                     ${target.text}
                                 </div>
                             `).join('')}
@@ -885,6 +951,15 @@ END</code></pre>
             checkAnswerButton.style.display = 'block';
         }
 
+        // Shuffle function
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         // Configurar drag and drop
         function setupDragAndDrop(correctMapping) {
             const draggables = document.querySelectorAll('.draggable');
@@ -893,6 +968,10 @@ END</code></pre>
             draggables.forEach(draggable => {
                 draggable.addEventListener('dragstart', (e) => {
                     e.dataTransfer.setData('text/plain', e.target.id);
+                    e.target.style.transform = 'scale(1.1)';
+                });
+                draggable.addEventListener('dragend', (e) => {
+                    e.target.style.transform = 'scale(1)';
                 });
             });
 
@@ -909,8 +988,24 @@ END</code></pre>
                     dropzone.classList.remove('hovered');
                     const draggableId = e.dataTransfer.getData('text/plain');
                     const draggableEl = document.getElementById(draggableId);
+                    
                     if (draggableEl) {
+                         // Check for existing child and validate
+                        if (dropzone.firstElementChild) {
+                            dropzone.firstElementChild.style.display = 'block';
+                        }
                         dropzone.appendChild(draggableEl);
+                        draggableEl.style.display = 'flex';
+                        draggableEl.style.transform = 'scale(1)';
+                        
+                        // Immediate visual feedback
+                        if (correctMapping[draggableId] === dropzone.id) {
+                            dropzone.classList.add('drag-correct');
+                            dropzone.classList.remove('drag-incorrect');
+                        } else {
+                            dropzone.classList.add('drag-incorrect');
+                            dropzone.classList.remove('drag-correct');
+                        }
                     }
                 });
             });
@@ -923,6 +1018,7 @@ END</code></pre>
             let userAnswer;
             const feedbackEl = document.getElementById('feedback');
 
+            // 1. Determinar si es correcta
             if (module.type === 'multipleChoice') {
                 userAnswer = document.querySelector('#question-content button.border-cyan-400')?.textContent;
                 if (userAnswer === module.answer) {
@@ -947,14 +1043,28 @@ END</code></pre>
                 }
             }
 
+            // 2. Dar retroalimentación y avanzar si es correcta
             if (isCorrect) {
-                feedbackEl.textContent = '¡Correcto! ¡Guau-maravilloso! 🐾';
+                feedbackEl.textContent = '¡Correcto! ¡Guau-maravilloso! 🐾'; 
                 feedbackEl.className = 'mt-4 font-bold text-green-400';
-                nextModuleButton.style.display = 'block';
+                
                 if (!completedModules.includes(currentModuleIndex)) {
                     score += 1;
                     completedModules.push(currentModuleIndex);
                 }
+                updateProgressBar(); // Actualizar barra inmediatamente
+
+                // Auto-advance logic with a slight delay for smooth transition (800ms)
+                setTimeout(() => {
+                    if (currentModuleIndex < modules.length - 1) {
+                        currentModuleIndex++;
+                        renderModule();
+                    } else if (currentModuleIndex === modules.length - 1) {
+                        // Si ya estamos en el último módulo (Certificado), renderizarlo nuevamente
+                        renderModule();
+                    }
+                }, 800); 
+                
             } else {
                 feedbackEl.textContent = '¡Incorrecto! No te rindas, intenta de nuevo. ¡Los grandes sabuesos también se equivocan! 🧐';
                 feedbackEl.className = 'mt-4 font-bold text-red-400';
@@ -963,41 +1073,44 @@ END</code></pre>
         
         // Dibujar certificado
         function drawCertificate(name, score) {
-            const ctx = certificateCanvas.getContext('2d');
-            const img = new Image();
-            img.onload = () => {
-                certificateCanvas.width = img.width;
-                certificateCanvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
+            const canvas = document.getElementById('certificate-canvas');
+            if (!canvas) return;
 
-                ctx.font = 'bold 60px Inter';
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#10b981';
-                ctx.shadowColor = '#06b6d4';
-                ctx.shadowBlur = 10;
-                ctx.fillText('¡CERTIFICADO DE SABUESO!', certificateCanvas.width / 2, 200);
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1200;
+            canvas.height = 800;
 
-                ctx.font = '40px Inter';
-                ctx.fillStyle = '#f43f5e';
-                ctx.fillText('Este certificado es otorgado a:', certificateCanvas.width / 2, 300);
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                ctx.font = 'bold 80px Inter';
-                ctx.fillStyle = '#fff';
-                ctx.fillText(name, certificateCanvas.width / 2, 400);
+            ctx.font = 'bold 60px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#10b981';
+            ctx.shadowColor = '#06b6d4';
+            ctx.shadowBlur = 10;
+            ctx.fillText('¡CERTIFICADO DE SABUESO!', canvas.width / 2, 200);
 
-                ctx.font = '40px Inter';
-                ctx.fillStyle = '#d1d5db';
-                ctx.fillText('Por haber completado el curso de', certificateCanvas.width / 2, 500);
+            ctx.font = '40px Inter';
+            ctx.fillStyle = '#f43f5e';
+            ctx.fillText('Este certificado es otorgado a:', canvas.width / 2, 300);
 
-                ctx.font = 'bold 50px Inter';
-                ctx.fillStyle = '#8b5cf6';
-                ctx.fillText('Análisis de Datos Políticos', certificateCanvas.width / 2, 560);
+            ctx.font = 'bold 80px Inter';
+            ctx.fillStyle = '#fff';
+            ctx.fillText(name, canvas.width / 2, 400);
 
-                ctx.font = '40px Inter';
-                ctx.fillStyle = '#d1d5db';
-                ctx.fillText(`Con una calificación de ${score}%`, certificateCanvas.width / 2, 650);
-            };
-            img.src = 'https://placehold.co/1200x800/1e293b/d1d5db?text=Certificado+de+Análisis+de+Datos';
+            ctx.font = '40px Inter';
+            ctx.fillStyle = '#d1d5db';
+            ctx.fillText('Por haber completado el curso de', canvas.width / 2, 500);
+
+            ctx.font = 'bold 50px Inter';
+            ctx.fillStyle = '#8b5cf6';
+            ctx.fillText('Análisis de Datos Políticos', canvas.width / 2, 560);
+
+            ctx.font = '40px Inter';
+            ctx.fillStyle = '#d1d5db';
+            ctx.fillText(`Con una calificación de ${score}%`, canvas.width / 2, 650);
+
+            canvas.classList.add('fade-in');
         }
 
         // Lógica de inicio
@@ -1007,11 +1120,6 @@ END</code></pre>
             fullName = document.getElementById('full-name').value;
             saveProgress();
             showScreen(courseScreen);
-            renderModule();
-        });
-
-        nextModuleButton.addEventListener('click', () => {
-            currentModuleIndex++;
             renderModule();
         });
 
